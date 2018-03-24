@@ -7,6 +7,9 @@
 
 #include <Pure2D/Util/Constants.h>
 #include <Pure2D/Window/Window.h>
+#include <vector>
+#include <Pure2D/Util/Random.h>
+#include "../Background/StarBackground.h"
 
 class Game
 {
@@ -20,6 +23,8 @@ public:
 
 private:
     pure::Window m_window;
+    pure::Texture* m_player;
+    StarBackground m_stars;
 
     void handleEvents(const SDL_Event& event);
     void doLoop();

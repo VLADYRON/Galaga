@@ -3,10 +3,15 @@
 //
 
 #include "Game.h"
+#include "AssetPaths.h"
 #include <Pure2D/Util/Clock.h>
+#include <Pure2D/Util/Random.h>
+#include <glm/ext.hpp>
 #include <SDL2/SDL.h>
+#include <glm/glm.hpp>
 #include <SDL2/SDL_image.h>
 #include <algorithm>
+#include <iostream>
 
 Game::Game()
 {
@@ -25,8 +30,20 @@ bool Game::createWindow(const char *title, pure::uint32 width, pure::uint32 heig
     return m_window.create(title, width, height);
 }
 
+// TODO: Put these in a player class or some shit
+SDL_Rect textureRect = {
+    18 * 7, 0, 18, 18
+};
+
+SDL_Rect renderRect = {
+    500, 768 - 50, 50, 50
+};
+
 void Game::start()
 {
+    m_player = m_window.getRenderer().getTexture(paths::GalagaSpriteSheet);
+    m_stars.create(200, 500, m_window.getSize());
+
     doLoop();
 }
 
@@ -71,10 +88,11 @@ void Game::doLoop()
 }
 void Game::update(float deltaTime)
 {
-
+    m_stars.update(deltaTime);
 }
 
 void Game::render()
 {
-
+    SDL_RenderCopy(m_window.getRenderer().getHandle(), m_player->getHandle(), &textureRect, &renderRect);
+    m_window.draw(m_stars);
 }
