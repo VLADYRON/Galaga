@@ -12,7 +12,7 @@ find_package(SDL2_image REQUIRED)
 find_package(Pure2D REQUIRED)
 
 
-add_executable(Galaga main.cpp Game/Game.cpp Game/Game.h Game/AssetPaths.h Background/StarBackground.cpp Background/StarBackground.h)
+add_executable(Galaga main.cpp Game/Game.cpp Game/Game.h Game/AssetPaths.h Background/StarBackground.cpp Background/StarBackground.h ECS/ECS.cpp ECS/ECS.h Components/Component.cpp Components/Component.h Systems/InputSystem.cpp Systems/InputSystem.h Components/Input/InputComponent.cpp Components/Input/InputComponent.h)
 include_directories(Galaga ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIR} ${PURE2D_INCLUDE_DIRS})
 
 target_link_libraries(Galaga ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARY} ${PURE2D_LIBRARIES})

@@ -11,6 +11,11 @@
 #include <Pure2D/Util/Random.h>
 #include "../Background/StarBackground.h"
 
+namespace pure
+{
+    class Texture;
+}
+
 class Game
 {
 public:
