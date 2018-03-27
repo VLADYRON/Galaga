@@ -10,9 +10,10 @@ configure_file("${CMAKE_SOURCE_DIR}/Assets/galaga-sprite-sheet.png" "${CMAKE_CUR
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(Pure2D REQUIRED)
+find_package(Boost 1.62.0 COMPONENTS system REQUIRED)
 
 
-add_executable(Galaga main.cpp Game/Game.cpp Game/Game.h Game/AssetPaths.h Background/StarBackground.cpp Background/StarBackground.h ECS/ECS.cpp ECS/ECS.h Components/Component.cpp Components/Component.h Systems/InputSystem.cpp Systems/InputSystem.h Components/Input/InputComponent.cpp Components/Input/InputComponent.h)
-include_directories(Galaga ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIR} ${PURE2D_INCLUDE_DIRS})
+add_executable(Galaga main.cpp Game/Game.cpp Game/Game.h Game/AssetPaths.h Background/StarBackground.cpp Background/StarBackground.h ECS/ECS.cpp ECS/ECS.h Components/Component.cpp Components/Component.h Systems/System.cpp Systems/System.h ECS/ComponentCollection.h ECS/ComponentType.h Components/PositionComponent.h Components/SpriteComponent.h Components/SpriteComponent.cpp Components/PositionComponent.cpp typedefs.h Systems/RenderSystem.cpp Systems/RenderSystem.h)
+include_directories(Galaga ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIR} ${PURE2D_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
-target_link_libraries(Galaga ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARY} ${PURE2D_LIBRARIES})
+target_link_libraries(Galaga ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARY} ${PURE2D_LIBRARIES} ${Boost_LIBRARIES})

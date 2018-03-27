@@ -8,6 +8,8 @@ Component::Component(pure::uint32 entity):
     m_entity(entity)
 { }
 
+Component::~Component() { }
+
 pure::uint32 Component::getEntity() const
 {
     return m_entity;

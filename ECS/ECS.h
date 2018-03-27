@@ -10,34 +10,43 @@
 #include <unordered_map>
 #include <memory>
 #include <vector>
+#include <Pure2D/Util/NonCopyable.h>
+#include "ComponentType.h"
+#include "../typedefs.h"
 
-class Component;
+// TODO: Maybe implement Components as a pool instead of creating them on
+// the fly at runtime in a map?
 
-class ECS final
+// TODO: Implement a way to remove components
+
+class ECS final : public pure::NonCopyable
 {
 public:
-    using Uptr_Component = std::unique_ptr<Component>;
-    using ComponentMap = std::unordered_map<std::type_index, Uptr_Component>;
+
+
+    using Entity = pure::uint32;
 
     static ECS& getInstance();
 
-    pure::uint32 createEntity();
+    Entity createEntity();
 
-    bool attachComponent(pure::uint32 entity, Uptr_Component& component);
+    bool attachComponent(Entity entity, Uptr_Component component);
 
-    std::vector<Component*> getComponents(pure::uint32 entity);
+    std::vector<Component*> getComponents(Entity entity);
+
+    void addSystem(Uptr_System system);
 
     template<typename T>
-    T* getComponent(pure::uint32 entity)
+    T* getComponent(Entity entity)
     {
         auto entityItr = m_entities.find(entity);
         if (entityItr != m_entities.end())
         {
-            ComponentMap& cmpMap = entityItr->second;
+            Entity_& e = entityItr->second;
             std::type_index typeIndex(typeid(T));
 
-            auto componentItr = cmpMap.find(typeIndex);
-            if (componentItr != cmpMap.end())
+            auto componentItr = e.components.find(typeIndex);
+            if (componentItr != e.components.end())
                 return static_cast<T*>(componentItr->second.get());
         }
 
@@ -45,10 +54,20 @@ public:
     }
 
 private:
+    using ComponentMap = std::unordered_map<std::type_index, Uptr_Component>;
+
     ECS() = default;
 
-    std::unordered_map<pure::uint32, ComponentMap> m_entities;
-    std::unordered_map<pure::uint32, int> m_entityMask;
+    // helper struct for dealing with entities internally
+    struct Entity_
+    {
+        pure::uint32 id;
+        ComponentType mask;
+        ComponentMap components;
+    };
+
+    std::unordered_map<pure::uint32, Entity_> m_entities;
+    std::vector<Uptr_System> m_systems;
 };
 
 

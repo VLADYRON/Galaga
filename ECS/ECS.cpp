@@ -3,43 +3,60 @@
 //
 
 #include "ECS.h"
+#include "../Systems/System.h"
 #include "../Components/Component.h"
 #include <unordered_map>
 #include <memory>
 
-
-pure::uint32 ECS::createEntity()
+Entity ECS::createEntity()
 {
     static pure::uint32 idCounter = 0;
+    Entity_ e;
+    e.id = ++idCounter;
 
-    m_entities.emplace(++idCounter, ComponentMap());
+    auto insertItr = m_entities.emplace(e.id, std::move(e)).first;
 
     return idCounter;
 }
 
-bool ECS::attachComponent(pure::uint32 entity, Uptr_Component& component)
+
+bool ECS::attachComponent(Entity entity, Uptr_Component component)
 {
     auto entityItr = m_entities.find(entity);
     if (entityItr == m_entities.end()) return false;
 
-    ComponentMap& cmpMap = entityItr->second;
+    Entity_& e = entityItr->second;
+    e.mask |= component->getType();
+
+    for (auto& sys : m_systems)
+    {
+        if ((sys->getMask() & e.mask) == sys->getMask())
+            sys->registerEntity(e.id);
+    }
+
+    ComponentMap& cmpMap = e.components;
 
     cmpMap.emplace(std::type_index(typeid(*component)), std::move(component));
     return true;
 }
 
-std::vector<Component*> ECS::getComponents(pure::uint32 entity)
+void ECS::addSystem(Uptr_System system)
+{
+    m_systems.push_back(std::move(system));
+}
+
+std::vector<Component *> ECS::getComponents(Entity entity)
 {
     std::vector<Component*> components;
 
     auto entityItr = m_entities.find(entity);
     if (entityItr == m_entities.end()) return components;
 
-    ComponentMap& cmpMap = entityItr->second;
+    Entity_& e = entityItr->second;
 
-    components.reserve(cmpMap.size());
+    components.reserve(e.components.size());
 
-    for (auto& pair: cmpMap)
+    for (auto& pair: e.components)
         components.push_back(pair.second.get());
 
     return components;
@@ -50,3 +67,5 @@ ECS &ECS::getInstance()
     static ECS ecs;
     return ecs;
 }
+
+
