@@ -5,6 +5,7 @@
 #include "StarBackground.h"
 #include <Pure2D/Util/Constants.h>
 #include <SDL2/SDL.h>
+#include <cmath>
 #include <glm/glm.hpp>
 
 using pure::uint64;
@@ -39,7 +40,7 @@ void StarBackground::update(float deltaTime)
 
     for (auto& star : m_stars)
     {
-        star.y += (m_speed * deltaTime);
+        star.y += std::round(m_speed * deltaTime);
 
         if (star.y > m_bounds.y)
         {

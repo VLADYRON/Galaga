@@ -8,7 +8,6 @@
 
 #include <Pure2D/Util/Constants.h>
 #include <bitset>
-#include "../ECS/ComponentType.h"
 
 class Component
 {
@@ -18,7 +17,6 @@ public:
     virtual ~Component() = 0;
 
     pure::uint32 getEntity() const;
-    virtual ComponentType getType() const = 0;
 
 protected:
 

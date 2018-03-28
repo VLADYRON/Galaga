@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "AssetPaths.h"
 #include <Pure2D/Util/Clock.h>
+#include <Pure2D/Input/Keyboard.h>
 #include <Pure2D/Util/Random.h>
 #include <glm/ext.hpp>
 #include <SDL2/SDL.h>
@@ -63,32 +64,106 @@ void Game::doLoop()
 
     SDL_GL_SetSwapInterval(0);
 
-    const float dt = 1.f / m_window.getRefreshRate();
+    const int TICKS_PER_SECOND = m_window.getRefreshRate();
+    const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    const int MAX_FRAMESKIP = 10;
+
+//    const float dt = 1.f / m_window.getRefreshRate();
+//    float accum = 0;
+
+    int nextTick = SDL_GetTicks();
+    int loops;
 
     while(m_window.isOpen())
     {
-        while(SDL_PollEvent(&event))
+
+        while (SDL_PollEvent(&event))
             handleEvents(event);
 
         m_window.clear();
 
-        float frameTime = clock.restart();
-
-        while(frameTime > 0.f)
+        loops = 0;
+        while (SDL_GetTicks() > nextTick && loops < MAX_FRAMESKIP)
         {
-            const float deltaTime = std::min(frameTime, dt);
-            update(deltaTime);
-            frameTime -= deltaTime;
+            update(1.f / (float)TICKS_PER_SECOND);
+            nextTick += SKIP_TICKS;
+            loops++;
         }
+
 
         render();
 
         m_window.swapBuffers();
     }
+
+//    const float dt = 1.f / m_window.getRefreshRate();
+//    float accum = 0;
+//    float currentTime = SDL_GetTicks() * 0.001f;
+//    int count = 0;
+//
+//    while(m_window.isOpen())
+//    {
+//
+//        while (SDL_PollEvent(&event))
+//            handleEvents(event);
+//
+//        m_window.clear();
+//
+//        float newTime = SDL_GetTicks() * 0.001f;
+//        float frameTime = newTime - currentTime;
+//
+//        currentTime = newTime;
+//
+//        accum += frameTime;
+//
+//        while(accum >= dt)
+//        {
+//            update(dt);
+//            accum -= dt;
+//        }
+//
+//        render();
+//
+//        m_window.swapBuffers();
+//    }
+
+//    while(m_window.isOpen())
+//    {
+//        while(SDL_PollEvent(&event))
+//            handleEvents(event);
+//
+//        m_window.clear();
+//
+//        const float frameTime = clock.restart();
+//        accum += frameTime;
+//
+//        while(accum >= dt)
+//        {
+//            const float deltaTime = std::min(frameTime, dt);
+//            update(dt);
+//            accum -= dt;
+//        }
+//
+//        render();
+//
+//        m_window.swapBuffers();
+//    }
 }
+
+
 void Game::update(float deltaTime)
 {
     m_stars.update(deltaTime);
+    using namespace pure::keyboard;
+
+    if (isKeyPressed(Key::A))
+    {
+        renderRect.x -= std::round(50 * deltaTime);
+    }
+    if (isKeyPressed(Key::D))
+    {
+        renderRect.x += std::round(50 * deltaTime);
+    }
 }
 
 void Game::render()
