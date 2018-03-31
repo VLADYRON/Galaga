@@ -14,7 +14,7 @@ namespace pure
     class Texture;
 }
 
-class Missle : public Entity, public pure::Renderable
+class Missle : public Entity
 {
 
     void setTextureRect(const SDL_Rect& rect);

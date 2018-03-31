@@ -18,6 +18,8 @@ class PlayerController
 public:
     using GameAction = std::function<void(Spaceship&, float)>;
 
+    explicit PlayerController(World& world);
+
     void handleInput(SDL_Event& event);
     void update(float deltaTime);
 

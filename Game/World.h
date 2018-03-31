@@ -5,12 +5,44 @@
 #ifndef GALAGA_WORLD_H
 #define GALAGA_WORLD_H
 
+#include <Pure2D/State/StateManager.h>
+#include <glm/vec2.hpp>
+#include <Pure2D/State/State.h>
+
+namespace pure
+{
+    class State;
+}
+
+class Entity;
 
 class World
 {
+public:
+    using UEntity_Ptr = std::unique_ptr<Entity>;
+
+    explicit World(pure::Window &window);
+
+    const std::vector<UEntity_Ptr> &getEntities(pure::State *state);
+
+    template<typename T>
+    T& instantiate(glm::vec2 position, pure::State *state = nullptr)
+    {
+        if (!state) state = m_currentState;
+
+        std::unique_ptr<T> entity = std::make_unique<T>(*this);
+        entity->setPosition(position);
+
+        std::vector<UEntity_Ptr>& stateEntities = m_entities[state];
+
+        stateEntities.push_back(std::move(entity));
+        return *stateEntities.back();
+    }
+
+    bool destroy(Entity& entity, pure::State* state = nullptr);
+
     /**
-     *  TODO: Put Statemanager here.
-     *  Subscribe to onStateChange event.
+     *  TODO:
      *  We will keep a map of state to a vector of pointers to entities in that state.
      *  something like: std::unordered_map<State*, std::vector<Entity*>>
      *
@@ -21,14 +53,11 @@ class World
      *  States will query this world object to know about all the entities it contains.
      *  States will also use this object to create/destroy entities.
      *
-     *  Q: How will we resolve rendering? it would make sense to implement a virtual update
-     *      method on entity class, but since not all entities are drawable, how will we draw from State?
-     *
-     *          Maybe just have all entities be renderable? probably won't need entities that arent drawable
-     *          in this case...
-     *
-     *          Or we can "side-cast" and if it succeeds, we can pass object to draw method of window
      */
+private:
+    pure::StateManager m_stateManager;
+    std::unordered_map<pure::State*, std::vector<UEntity_Ptr>> m_entities;
+    pure::State* m_currentState;
 };
 
 

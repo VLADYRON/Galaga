@@ -7,6 +7,10 @@
 #include "../Entities/Entity.h"
 #include <cmath>
 
+PlayerController::PlayerController(World &world):
+    m_player(world)
+{ }
+
 void PlayerController::handleInput(SDL_Event &event)
 {
 
@@ -37,3 +41,4 @@ void PlayerController::changeKeybind(pure::keyboard::Key oldKey, pure::keyboard:
     handler.key() = newKey;
     m_keybinds.insert(std::move(handler));
 }
+

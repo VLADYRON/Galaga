@@ -11,10 +11,10 @@
 
 struct Rect;
 
-class Spaceship : public Entity, public pure::Renderable
+class Spaceship : public Entity
 {
 public:
-
+    explicit Spaceship(World& world);
     void setTextureRect(const SDL_Rect& rect);
     void setTexture(pure::Texture* texture);
 

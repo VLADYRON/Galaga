@@ -4,6 +4,8 @@
 
 #include "Entity.h"
 
+Entity::Entity(World &world):
+    m_world(world) { }
 
 Entity::~Entity() { }
 
@@ -25,4 +27,5 @@ const glm::vec2& Entity::getOrigin() const { return m_transform.origin; }
 void Entity::setOrigin(const glm::vec2 &origin) { m_transform.origin = origin; }
 
 glm::vec2 Entity::getTopLeft() const { return m_transform.position; }
+
 

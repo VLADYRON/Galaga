@@ -17,7 +17,10 @@
 #include <algorithm>
 #include <iostream>
 
-Game::Game()
+Game::Game():
+    m_window(),
+    m_world(m_window),
+    m_player(m_world)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP);
@@ -100,7 +103,7 @@ void Game::doLoop()
 
     SDL_GL_SetSwapInterval(0);
 
-    const float dt = 1.f / m_window.getRefreshRate();
+    const float dt = 1.f / 60.f;
     float accum = 0.f;
 
     while(m_window.isOpen())

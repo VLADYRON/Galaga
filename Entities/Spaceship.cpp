@@ -5,6 +5,9 @@
 #include "Spaceship.h"
 #include "../Game/Rect.h"
 
+Spaceship::Spaceship(World &world)
+    : Entity(world) { }
+
 void Spaceship::draw(SDL_Renderer *renderer) const
 {
     assert(m_sprite.textureRect != std::nullopt);

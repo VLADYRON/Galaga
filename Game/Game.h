@@ -11,6 +11,7 @@
 #include <Pure2D/Util/Random.h>
 #include "../Background/StarBackground.h"
 #include "../Player/PlayerController.h"
+#include "World.h"
 
 namespace pure
 {
@@ -29,6 +30,7 @@ public:
 
 private:
     pure::Window m_window;
+    World m_world;
     PlayerController m_player;
     StarBackground m_stars;
 

@@ -5,11 +5,15 @@
 #ifndef GALAGA_ENTITY_H
 #define GALAGA_ENTITY_H
 
+#include <Pure2D/Renderables/Renderable.h>
 #include "../Components/TransformComponent.h"
+struct SDL_Renderer;
+class World;
 
-class Entity
+class Entity : public pure::Renderable
 {
 public:
+    explicit Entity(World& world);
     virtual ~Entity() = 0;
 
     const TransformComponent& getTransform() const;
@@ -43,6 +47,12 @@ public:
     void setOrigin(const glm::vec2& origin);
 
     void move(const glm::vec2& position);
+
+    virtual void update(float deltaTime) { }
+    virtual void draw(SDL_Renderer* renderer) { }
+
+protected:
+    World& m_world;
 
 private:
     TransformComponent m_transform;
