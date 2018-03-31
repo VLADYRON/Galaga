@@ -1,9 +1,16 @@
 //
-// Created by matt on 3/26/18.
+// Created by matt on 3/30/18.
 //
-
 #include "SpriteComponent.h"
 
-SpriteComponent::SpriteComponent(pure::uint32 entity)
-    : Component(entity)
-{ }
+#include <utility>
+
+
+SpriteComponent::SpriteComponent(
+    pure::Texture *texture,
+    std::optional<SDL_Rect> textureRect,
+    glm::vec2 size
+):
+    texture(texture),
+    textureRect(std::move(textureRect)),
+    size(size) { }

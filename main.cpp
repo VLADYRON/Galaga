@@ -1,10 +1,11 @@
 #include <iostream>
 #include "Game/Game.h"
+#include <glm/glm.hpp>
 
 int main()
 {
     Game g;
-    g.createWindow("Galaga", 1366, 768);
+    g.createWindow("Galaga", 750, 900);
     g.start();
     return 0;
 }

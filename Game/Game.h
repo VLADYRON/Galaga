@@ -10,6 +10,7 @@
 #include <vector>
 #include <Pure2D/Util/Random.h>
 #include "../Background/StarBackground.h"
+#include "../Player/PlayerController.h"
 
 namespace pure
 {
@@ -28,7 +29,7 @@ public:
 
 private:
     pure::Window m_window;
-    pure::Texture* m_player;
+    PlayerController m_player;
     StarBackground m_stars;
 
     void handleEvents(const SDL_Event& event);

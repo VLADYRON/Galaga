@@ -4,6 +4,9 @@
 
 #include "Game.h"
 #include "AssetPaths.h"
+#include "../Entities/Entity.h"
+#include "../Util/SpriteMap.h"
+#include "../Game/Rect.h"
 #include <Pure2D/Util/Clock.h>
 #include <Pure2D/Input/Keyboard.h>
 #include <Pure2D/Util/Random.h>
@@ -16,7 +19,7 @@
 
 Game::Game()
 {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP);
 }
 
@@ -31,18 +34,51 @@ bool Game::createWindow(const char *title, pure::uint32 width, pure::uint32 heig
     return m_window.create(title, width, height);
 }
 
-// TODO: Put these in a player class or some shit
-SDL_Rect textureRect = {
-    18 * 7, 0, 18, 18
-};
-
 SDL_Rect renderRect = {
     500, 768 - 50, 50, 50
 };
 
 void Game::start()
 {
-    m_player = m_window.getRenderer().getTexture(paths::GalagaSpriteSheet);
+    pure::Texture* texture = m_window.getRenderer().getTexture(paths::GalagaSpriteSheet);
+
+    Spaceship& playerShip = m_player.getShip();
+
+    playerShip.setTexture(texture);
+    playerShip.setTextureRect(spritemap::SHIP_WHITE);
+    playerShip.setSize({ 50, 50 });
+
+    glm::vec2 position = {
+        (m_window.getSize().x / 2.f),
+        (m_window.getSize().y - playerShip.getSize().y / 2.f)
+    };
+
+    playerShip.setOrigin(playerShip.getSize() / 2.f);
+    playerShip.setPosition(position);
+
+    playerShip.setVelocity({ 250, 0 });
+
+    using namespace pure::keyboard;
+
+    m_player.addKeybind(Key::A, [](Spaceship& player, float dt) {
+        player.move({ -(std::round(player.getVelocity().x * dt)), 0.f });
+        if (player.getTopLeft().x < 0)
+            player.setPosition({ (player.getSize().x / 2.f), player.getPosition().y });
+    });
+
+    m_player.addKeybind(Key::D, [this](Spaceship& player, float dt) {
+        player.move({ (std::round(player.getVelocity().x * dt)), 0.f });
+        if (player.getTopLeft().x + player.getSize().x > m_window.getSize().x)
+        {
+            player.setPosition({ m_window.getSize().x - (player.getSize().x / 2.f), player.getPosition().y });
+        }
+    });
+
+    m_player.addKeybind(Key::SPACE, [](Spaceship& player, float dt) {
+        player.fireMissle();
+    });
+
+
     m_stars.create(200, 500, m_window.getSize());
 
     doLoop();
@@ -64,110 +100,43 @@ void Game::doLoop()
 
     SDL_GL_SetSwapInterval(0);
 
-    const int TICKS_PER_SECOND = m_window.getRefreshRate();
-    const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-    const int MAX_FRAMESKIP = 10;
-
-//    const float dt = 1.f / m_window.getRefreshRate();
-//    float accum = 0;
-
-    int nextTick = SDL_GetTicks();
-    int loops;
+    const float dt = 1.f / m_window.getRefreshRate();
+    float accum = 0.f;
 
     while(m_window.isOpen())
     {
-
-        while (SDL_PollEvent(&event))
+        while(SDL_PollEvent(&event))
             handleEvents(event);
 
-        m_window.clear();
 
-        loops = 0;
-        while (SDL_GetTicks() > nextTick && loops < MAX_FRAMESKIP)
+        float frameTime = clock.restart();
+        accum += frameTime;
+
+        while(accum >= dt)
         {
-            update(1.f / (float)TICKS_PER_SECOND);
-            nextTick += SKIP_TICKS;
-            loops++;
+            update(dt);
+            accum -= dt;
         }
 
+        m_window.clear(glm::vec4(0, 0, 0, 255));
 
         render();
 
         m_window.swapBuffers();
     }
-
-//    const float dt = 1.f / m_window.getRefreshRate();
-//    float accum = 0;
-//    float currentTime = SDL_GetTicks() * 0.001f;
-//    int count = 0;
-//
-//    while(m_window.isOpen())
-//    {
-//
-//        while (SDL_PollEvent(&event))
-//            handleEvents(event);
-//
-//        m_window.clear();
-//
-//        float newTime = SDL_GetTicks() * 0.001f;
-//        float frameTime = newTime - currentTime;
-//
-//        currentTime = newTime;
-//
-//        accum += frameTime;
-//
-//        while(accum >= dt)
-//        {
-//            update(dt);
-//            accum -= dt;
-//        }
-//
-//        render();
-//
-//        m_window.swapBuffers();
-//    }
-
-//    while(m_window.isOpen())
-//    {
-//        while(SDL_PollEvent(&event))
-//            handleEvents(event);
-//
-//        m_window.clear();
-//
-//        const float frameTime = clock.restart();
-//        accum += frameTime;
-//
-//        while(accum >= dt)
-//        {
-//            const float deltaTime = std::min(frameTime, dt);
-//            update(dt);
-//            accum -= dt;
-//        }
-//
-//        render();
-//
-//        m_window.swapBuffers();
-//    }
 }
 
 
 void Game::update(float deltaTime)
 {
     m_stars.update(deltaTime);
-    using namespace pure::keyboard;
-
-    if (isKeyPressed(Key::A))
-    {
-        renderRect.x -= std::round(50 * deltaTime);
-    }
-    if (isKeyPressed(Key::D))
-    {
-        renderRect.x += std::round(50 * deltaTime);
-    }
+    m_player.update(deltaTime);
 }
+
 
 void Game::render()
 {
-    SDL_RenderCopy(m_window.getRenderer().getHandle(), m_player->getHandle(), &textureRect, &renderRect);
+    m_window.draw(m_player.getShip());
     m_window.draw(m_stars);
 }
+
