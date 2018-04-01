@@ -5,7 +5,7 @@
 #include "Entity.h"
 
 Entity::Entity(World &world):
-    m_world(world) { }
+    m_world(&world) { }
 
 Entity::~Entity() { }
 
@@ -24,7 +24,13 @@ void Entity::setRotation(float rotation) { m_transform.rotation = rotation; }
 void Entity::move(const glm::vec2 &position) { m_transform.position += position; }
 
 const glm::vec2& Entity::getOrigin() const { return m_transform.origin; }
-void Entity::setOrigin(const glm::vec2 &origin) { m_transform.origin = origin; }
+void Entity::setOrigin(const glm::vec2 &origin)
+{
+    // make sure SDL position stays in sync with origin
+    m_transform.position -= origin;
+
+    m_transform.origin = origin;
+}
 
 glm::vec2 Entity::getTopLeft() const { return m_transform.position; }
 

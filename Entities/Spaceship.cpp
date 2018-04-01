@@ -3,25 +3,26 @@
 //
 
 #include "Spaceship.h"
-#include "../Game/Rect.h"
+#include "../Game/World.h"
+#include "../Util/Rect.h"
+#include "Missile.h"
+#include "../Util/Defaults.h"
+#include <Pure2D/Util/Convert.h>
 
 Spaceship::Spaceship(World &world)
-    : Entity(world) { }
+    : Entity(world)
+{
+    setSize({ 50, 50 });
+    setOrigin(getSize() / 2.f);
+    setVelocity({ 250, 0 });
+}
 
 void Spaceship::draw(SDL_Renderer *renderer) const
 {
     assert(m_sprite.textureRect != std::nullopt);
-    SDL_Rect drawRect = getBoundingRect();
 
-    SDL_RenderCopyEx(
-        renderer,
-        m_sprite.texture->getHandle(),
-        &*m_sprite.textureRect,
-        &drawRect,
-        getTransform().rotation,
-        nullptr,
-        SDL_FLIP_NONE
-    );
+    m_sprite.draw(renderer, getTransform());
+    SDL_Rect rect = (SDL_Rect)getBoundingRect();
 }
 
 void Spaceship::setTextureRect(const SDL_Rect &rect) { m_sprite.textureRect = rect; }
@@ -40,9 +41,12 @@ glm::vec2 Spaceship::getCenterPos() const
     return getTopLeft() + (getSize() / 2.f);
 }
 
-void Spaceship::fireMissle()
+void Spaceship::fireMissile()
 {
-    // TODO: Implement Me
+    glm::vec2 shipPos = getPosition();
+    glm::vec2 firePos = { shipPos.x, shipPos.y - getSize().y / 2.f };
+    auto& m = m_world->instantiate<Missile>(firePos);
+    defaults::set(m, SpriteType::MISSLE_PLAYER);
 }
 
 

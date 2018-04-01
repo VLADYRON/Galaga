@@ -11,7 +11,7 @@
 
 struct Rect;
 
-class Spaceship : public Entity
+class Spaceship : public Entity, public pure::Renderable
 {
 public:
     explicit Spaceship(World& world);
@@ -24,7 +24,9 @@ public:
     Rect getBoundingRect() const;
     glm::vec2 getCenterPos() const;
 
-    void fireMissle();
+    void fireMissile();
+
+//    Spaceship& Spaceship::operator=(const Spaceship&) = default;
 
 private:
     SpriteComponent m_sprite;

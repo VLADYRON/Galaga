@@ -2,8 +2,8 @@
 // Created by matt on 3/30/18.
 //
 
-#ifndef GALAGA_MISSLE_H
-#define GALAGA_MISSLE_H
+#ifndef GALAGA_MISSILE_H
+#define GALAGA_MISSILE_H
 
 #include <Pure2D/Renderables/Renderable.h>
 #include "Entity.h"
@@ -14,11 +14,17 @@ namespace pure
     class Texture;
 }
 
-class Missle : public Entity
+class Missile : public Entity, public pure::Renderable
 {
-
+public:
+    explicit Missile(World& world);
     void setTextureRect(const SDL_Rect& rect);
     void setTexture(pure::Texture* texture);
+
+    void setSize(const glm::vec2 &size);
+    glm::vec2 getSize() const;
+
+    void update(float deltaTime) final;
 
 private:
     void draw(SDL_Renderer* renderer) const final;
@@ -26,4 +32,4 @@ private:
 };
 
 
-#endif //GALAGA_MISSLE_H
+#endif //GALAGA_MISSILE_H

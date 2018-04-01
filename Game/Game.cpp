@@ -6,7 +6,9 @@
 #include "AssetPaths.h"
 #include "../Entities/Entity.h"
 #include "../Util/SpriteMap.h"
-#include "../Game/Rect.h"
+#include "../Util/Rect.h"
+#include "../Util/TextureManager.h"
+#include "../Util/Defaults.h"
 #include <Pure2D/Util/Clock.h>
 #include <Pure2D/Input/Keyboard.h>
 #include <Pure2D/Util/Random.h>
@@ -19,7 +21,7 @@
 
 Game::Game():
     m_window(),
-    m_world(m_window),
+    m_world(),
     m_player(m_world)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -37,29 +39,24 @@ bool Game::createWindow(const char *title, pure::uint32 width, pure::uint32 heig
     return m_window.create(title, width, height);
 }
 
-SDL_Rect renderRect = {
-    500, 768 - 50, 50, 50
-};
-
 void Game::start()
 {
-    pure::Texture* texture = m_window.getRenderer().getTexture(paths::GalagaSpriteSheet);
+    {
+        TextureManager& textureManager = TextureManager::instance();
+        pure::Texture* spritesheet =  m_window.getRenderer().getTexture(paths::GalagaSpriteSheet);
+        textureManager.addTexture(paths::GalagaSpriteSheet, spritesheet);
+    }
 
     Spaceship& playerShip = m_player.getShip();
 
-    playerShip.setTexture(texture);
-    playerShip.setTextureRect(spritemap::SHIP_WHITE);
-    playerShip.setSize({ 50, 50 });
+    defaults::set(playerShip, SpriteType::SHIP_WHITE);
 
     glm::vec2 position = {
         (m_window.getSize().x / 2.f),
         (m_window.getSize().y - playerShip.getSize().y / 2.f)
     };
 
-    playerShip.setOrigin(playerShip.getSize() / 2.f);
     playerShip.setPosition(position);
-
-    playerShip.setVelocity({ 250, 0 });
 
     using namespace pure::keyboard;
 
@@ -77,9 +74,9 @@ void Game::start()
         }
     });
 
-    m_player.addKeybind(Key::SPACE, [](Spaceship& player, float dt) {
-        player.fireMissle();
-    });
+//    m_player.addKeybind(Key::SPACE, [](Spaceship& player, float dt) {
+//        player.fireMissile();
+//    });
 
 
     m_stars.create(200, 500, m_window.getSize());
@@ -94,6 +91,8 @@ void Game::handleEvents(const SDL_Event &event)
 
     if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE)
         m_window.close();
+
+    m_player.handleInput(event);
 }
 
 void Game::doLoop()
@@ -106,11 +105,11 @@ void Game::doLoop()
     const float dt = 1.f / 60.f;
     float accum = 0.f;
 
+
     while(m_window.isOpen())
     {
         while(SDL_PollEvent(&event))
             handleEvents(event);
-
 
         float frameTime = clock.restart();
         accum += frameTime;
@@ -133,13 +132,41 @@ void Game::doLoop()
 void Game::update(float deltaTime)
 {
     m_stars.update(deltaTime);
+    m_world.update();
+
+    const EArr<Spaceship>& ships = m_world.getEntities<Spaceship>();
+    const EArr<Missile>& missiles = m_world.getEntities<Missile>();
+
     m_player.update(deltaTime);
+
+    for (auto& s : ships)
+        const_cast<Spaceship&>(s).update(deltaTime);
+
+    for (auto& m : missiles)
+    {
+        auto& ms = const_cast<Missile&>(m);
+        ms.update(deltaTime);
+        glm::vec2 pos = ms.getPosition();
+
+        Rect winRect = { 0, 0, m_window.getSize().x, m_window.getSize().y };
+
+        if (winRect.isOutside(pos))
+            m_world.destroy<Missile>(ms);
+    }
 }
 
 
 void Game::render()
 {
-    m_window.draw(m_player.getShip());
+
+    const EArr<Spaceship>& ships = m_world.getEntities<Spaceship>();
+    const EArr<Missile>& missiles = m_world.getEntities<Missile>();
+
+    for (auto& s : ships)
+        m_window.draw(s);
+    for (auto& m : missiles)
+        m_window.draw(m);
+
     m_window.draw(m_stars);
 }
 

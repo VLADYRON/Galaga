@@ -4,16 +4,22 @@
 
 #include <Pure2D/Input/Keyboard.h>
 #include "PlayerController.h"
+#include "../Game/World.h"
 #include "../Entities/Entity.h"
 #include <cmath>
+#include <iostream>
 
 PlayerController::PlayerController(World &world):
-    m_player(world)
+    m_player(world.instantiate<Spaceship>({ 0, 0 }))
 { }
 
-void PlayerController::handleInput(SDL_Event &event)
+void PlayerController::handleInput(const SDL_Event &event)
 {
-
+    if (event.type == SDL_KEYUP)
+    {
+        if (event.key.state == SDL_RELEASED && event.key.keysym.sym == SDLK_SPACE)
+            m_player.fireMissile();
+    }
 }
 
 void PlayerController::update(float deltaTime)

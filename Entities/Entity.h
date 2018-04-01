@@ -10,7 +10,7 @@
 struct SDL_Renderer;
 class World;
 
-class Entity : public pure::Renderable
+class Entity
 {
 public:
     explicit Entity(World& world);
@@ -49,10 +49,9 @@ public:
     void move(const glm::vec2& position);
 
     virtual void update(float deltaTime) { }
-    virtual void draw(SDL_Renderer* renderer) { }
 
 protected:
-    World& m_world;
+    World* m_world;
 
 private:
     TransformComponent m_transform;

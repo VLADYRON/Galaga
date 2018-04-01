@@ -20,7 +20,7 @@ public:
 
     explicit PlayerController(World& world);
 
-    void handleInput(SDL_Event& event);
+    void handleInput(const SDL_Event& event);
     void update(float deltaTime);
 
     void addKeybind(pure::keyboard::Key key, GameAction action);
@@ -30,7 +30,7 @@ public:
     Spaceship& getShip();
 
 private:
-    Spaceship m_player;
+    Spaceship& m_player;
     std::unordered_map<pure::keyboard::Key, GameAction> m_keybinds;
 
 };
