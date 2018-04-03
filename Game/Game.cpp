@@ -128,7 +128,7 @@ void Game::doLoop()
     }
 }
 
-
+// TODO: Create some game states
 void Game::update(float deltaTime)
 {
     m_stars.update(deltaTime);
@@ -139,6 +139,7 @@ void Game::update(float deltaTime)
 
     m_player.update(deltaTime);
 
+    // TODO: find some why to not have to const cast, or at least hide it...
     for (auto& s : ships)
         const_cast<Spaceship&>(s).update(deltaTime);
 
