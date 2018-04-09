@@ -10,10 +10,9 @@ configure_file("${CMAKE_SOURCE_DIR}/Assets/galaga-sprite-sheet.png" "${CMAKE_CUR
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(Pure2D REQUIRED)
-find_package(Boost 1.62.0 COMPONENTS system REQUIRED)
 
 
-add_executable(Galaga main.cpp Game/Game.cpp Game/Game.h Game/AssetPaths.h Background/StarBackground.cpp Background/StarBackground.h Components/TransformComponent.h Components/TransformComponent.cpp Player/PlayerController.cpp Player/PlayerController.h Entities/Entity.cpp Entities/Entity.h Entities/Spaceship.cpp Entities/Spaceship.h Components/SpriteComponent.h Components/SpriteComponent.cpp Util/Rect.h Entities/Missile.cpp Entities/Missile.h Util/SpriteMap.h Game/World.cpp Game/World.h Game/EntityManager.h typedefs.h Util/TextureManager.cpp Util/TextureManager.h Util/Defaults.cpp Util/Defaults.h Util/Rect.cpp)
+add_executable(Galaga main.cpp Game/Game.cpp Game/Game.h Game/AssetPaths.h Background/StarBackground.cpp Background/StarBackground.h Components/TransformComponent.h Components/TransformComponent.cpp Player/PlayerController.cpp Player/PlayerController.h Entities/Entity.cpp Entities/Entity.h Entities/Spaceship.cpp Entities/Spaceship.h Components/SpriteComponent.h Components/SpriteComponent.cpp Util/Rect.h Entities/Missile.cpp Entities/Missile.h Util/SpriteMap.h Game/World.cpp Game/World.h Game/EntityManager.h typedefs.h Util/TextureManager.cpp Util/TextureManager.h Util/Defaults.cpp Util/Defaults.h Util/Rect.cpp Util/Spline.cpp Util/Spline.h)
 include_directories(Galaga ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIR} ${PURE2D_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 target_link_libraries(Galaga ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARY} ${PURE2D_LIBRARIES} ${Boost_LIBRARIES})

@@ -74,11 +74,6 @@ void Game::start()
         }
     });
 
-//    m_player.addKeybind(Key::SPACE, [](Spaceship& player, float dt) {
-//        player.fireMissile();
-//    });
-
-
     m_stars.create(200, 500, m_window.getSize());
 
     doLoop();
