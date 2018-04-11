@@ -9,8 +9,8 @@ Entity::Entity(World &world):
 
 Entity::~Entity() { }
 
-const TransformComponent& Entity::getTransform() const { return m_transform; }
-void Entity::setTransform(const TransformComponent &transform) { m_transform = transform; }
+const Transform& Entity::getTransform() const { return m_transform; }
+void Entity::setTransform(const Transform &transform) { m_transform = transform; }
 
 glm::vec2 Entity::getPosition() const { return m_transform.position + m_transform.origin; }
 void Entity::setPosition(const glm::vec2 &position) { m_transform.position = position - m_transform.origin; }

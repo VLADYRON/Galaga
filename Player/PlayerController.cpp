@@ -10,7 +10,7 @@
 #include <iostream>
 
 PlayerController::PlayerController(World &world):
-    m_player(world.instantiate<Spaceship>({ 0, 0 }))
+    m_player(world)
 { }
 
 void PlayerController::handleInput(const SDL_Event &event)
@@ -33,7 +33,7 @@ void PlayerController::update(float deltaTime)
     }
 }
 
-Spaceship& PlayerController::getShip() { return m_player; }
+Fighter& PlayerController::getShip() { return m_player; }
 
 void PlayerController::addKeybind(pure::keyboard::Key key, PlayerController::GameAction action) { m_keybinds.emplace(key, action); }
 void PlayerController::removeKeybind(pure::keyboard::Key key) { m_keybinds.erase(key); }

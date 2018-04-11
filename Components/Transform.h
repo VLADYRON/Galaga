@@ -2,14 +2,14 @@
 // Created by matt on 3/26/18.
 //
 
-#ifndef GALAGA_TRANSFORMCOMPONENT_H
-#define GALAGA_TRANSFORMCOMPONENT_H
+#ifndef GALAGA_TRANSFORM_H
+#define GALAGA_TRANSFORM_H
 
 #include <glm/vec2.hpp>
 
-struct TransformComponent
+struct Transform
 {
-    TransformComponent();
+    Transform();
 
     glm::vec2 position;
     glm::vec2 velocity;
@@ -18,4 +18,4 @@ struct TransformComponent
 };
 
 
-#endif //GALAGA_TRANSFORMCOMPONENT_H
+#endif //GALAGA_TRANSFORM_H

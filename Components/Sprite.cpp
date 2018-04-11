@@ -1,7 +1,7 @@
 //
 // Created by matt on 3/30/18.
 //
-#include "SpriteComponent.h"
+#include "Sprite.h"
 
 #include <utility>
 #include <Pure2D/Util/Convert.h>
@@ -9,7 +9,7 @@
 #include <SDL2/SDL.h>
 
 
-SpriteComponent::SpriteComponent(
+Sprite::Sprite(
     pure::Texture *texture,
     std::optional<SDL_Rect> textureRect,
     glm::vec2 size
@@ -19,7 +19,7 @@ SpriteComponent::SpriteComponent(
     size(size) { }
 
 
-void SpriteComponent::draw(SDL_Renderer *renderer, const TransformComponent &transform, SDL_RendererFlip flip) const
+void Sprite::draw(SDL_Renderer *renderer, const Transform &transform, SDL_RendererFlip flip) const
 {
     assert(textureRect != std::nullopt);
     assert(texture != nullptr);

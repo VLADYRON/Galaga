@@ -9,9 +9,10 @@
 #include <glm/vec2.hpp>
 #include <Pure2D/State/State.h>
 #include "EntityManager.h"
-#include "../Entities/Spaceship.h"
+#include "../Entities/Fighter.h"
 #include "../typedefs.h"
 #include "../Entities/Missile.h"
+#include "../Entities/Alien.h"
 
 namespace pure
 {
@@ -58,8 +59,8 @@ public:
 private:
 
     EntityManager< 50,
-        Spaceship,
-        Missile
+        Missile,
+        Alien
         > m_entityManager;
 
 };

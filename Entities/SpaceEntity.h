@@ -1,20 +1,22 @@
 //
-// Created by matt on 3/30/18.
+// Created by matt on 4/9/18.
 //
 
-#ifndef GALAGA_SPACESHIP_H
-#define GALAGA_SPACESHIP_H
+#ifndef GALAGA_SPACEENTITY_H
+#define GALAGA_SPACEENTITY_H
+
 
 #include <Pure2D/Renderables/Texture.h>
 #include "Entity.h"
-#include "../Components/SpriteComponent.h"
+#include "../Components/Sprite.h"
 
 struct Rect;
 
-class Spaceship : public Entity, public pure::Renderable
+class SpaceEntity : public Entity, public pure::Renderable
 {
 public:
-    explicit Spaceship(World& world);
+    explicit SpaceEntity(World& world);
+    virtual ~SpaceEntity() = 0;
     void setTextureRect(const SDL_Rect& rect);
     void setTexture(pure::Texture* texture);
 
@@ -24,15 +26,12 @@ public:
     Rect getBoundingRect() const;
     glm::vec2 getCenterPos() const;
 
-    void fireMissile();
 
-//    Spaceship& Spaceship::operator=(const Spaceship&) = default;
-
-private:
-    SpriteComponent m_sprite;
+protected:
+    Sprite m_sprite;
 
     void draw(SDL_Renderer* renderer) const final;
 };
 
 
-#endif //GALAGA_SPACESHIP_H
+#endif //GALAGA_SPACEENTITY_H

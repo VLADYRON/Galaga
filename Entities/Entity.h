@@ -6,7 +6,7 @@
 #define GALAGA_ENTITY_H
 
 #include <Pure2D/Renderables/Renderable.h>
-#include "../Components/TransformComponent.h"
+#include "../Components/Transform.h"
 struct SDL_Renderer;
 class World;
 
@@ -16,8 +16,8 @@ public:
     explicit Entity(World& world);
     virtual ~Entity() = 0;
 
-    const TransformComponent& getTransform() const;
-    void setTransform(const TransformComponent& transform);
+    const Transform& getTransform() const;
+    void setTransform(const Transform& transform);
 
     /**
      * Gets top left coordinate of entity.
@@ -54,7 +54,7 @@ protected:
     World* m_world;
 
 private:
-    TransformComponent m_transform;
+    Transform m_transform;
 };
 
 

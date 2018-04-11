@@ -3,9 +3,9 @@
 //
 
 #include <Pure2D/Util/Constants.h>
-#include "TransformComponent.h"
+#include "Transform.h"
 
-TransformComponent::TransformComponent():
+Transform::Transform():
     rotation(0.f)
 {
 

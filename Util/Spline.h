@@ -26,8 +26,9 @@ public:
 
     explicit Spline(float stepSize = 0.005f, std::vector<Node> points = std::vector<Node>());
 
-    glm::vec2 getPoint(float pos) const;
-    glm::vec2 getGradient(float pos) const;
+    float getOffset(float pos) const;
+    glm::vec2 getPoint(float t) const;
+    glm::vec2 getGradient(float t) const;
     float length() const;
 
     float stepSize() const;
@@ -42,10 +43,8 @@ private:
     std::vector<Node> m_points;
     float m_stepSize;
     float m_length;
-    float m_tailLength;
 
     float calcNodeLength(size_t node) const;
-    float getOffset(float pos) const;
     void calcLengths();
 
 

@@ -47,9 +47,27 @@ void Game::start()
         textureManager.addTexture(paths::GalagaSpriteSheet, spritesheet);
     }
 
-    Spaceship& playerShip = m_player.getShip();
+    Fighter& playerShip = m_player.getShip();
 
     defaults::set(playerShip, SpriteType::SHIP_WHITE);
+
+    auto& alien = m_world.instantiate<Alien>({ -115, 769 });
+    defaults::set(alien, SpriteType::BEE);
+    alien.setDivepath({
+        Spline::Node({ 10,44 }),
+        Spline::Node({ -115,769 }),
+        Spline::Node({ 59,746 }),
+        Spline::Node({ 204,634 }),
+        Spline::Node({ 104,563 }),
+        Spline::Node({ 45,645 }),
+        Spline::Node({ 123,729 }),
+        Spline::Node({ 251,648 }),
+        Spline::Node({ 99,627 }),
+        Spline::Node({ 200,735 }),
+        Spline::Node({ 338,601 }),
+        Spline::Node({ 393,300 }),
+        Spline::Node({ 368,41 })
+      });
 
     glm::vec2 position = {
         (m_window.getSize().x / 2.f),
@@ -60,13 +78,13 @@ void Game::start()
 
     using namespace pure::keyboard;
 
-    m_player.addKeybind(Key::A, [](Spaceship& player, float dt) {
+    m_player.addKeybind(Key::A, [](Fighter& player, float dt) {
         player.move({ -(std::round(player.getVelocity().x * dt)), 0.f });
         if (player.getTopLeft().x < 0)
             player.setPosition({ (player.getSize().x / 2.f), player.getPosition().y });
     });
 
-    m_player.addKeybind(Key::D, [this](Spaceship& player, float dt) {
+    m_player.addKeybind(Key::D, [this](Fighter& player, float dt) {
         player.move({ (std::round(player.getVelocity().x * dt)), 0.f });
         if (player.getTopLeft().x + player.getSize().x > m_window.getSize().x)
         {
@@ -129,14 +147,17 @@ void Game::update(float deltaTime)
     m_stars.update(deltaTime);
     m_world.update();
 
-    const EArr<Spaceship>& ships = m_world.getEntities<Spaceship>();
     const EArr<Missile>& missiles = m_world.getEntities<Missile>();
+    const EArr<Alien>& aliens = m_world.getEntities<Alien>();
 
     m_player.update(deltaTime);
 
-    // TODO: find some why to not have to const cast, or at least hide it...
-    for (auto& s : ships)
-        const_cast<Spaceship&>(s).update(deltaTime);
+    // TODO: find some way to not have to const cast, or at least hide it...
+
+    for (auto& a : aliens)
+    {
+        const_cast<Alien&>(a).update(deltaTime);
+    }
 
     for (auto& m : missiles)
     {
@@ -155,14 +176,16 @@ void Game::update(float deltaTime)
 void Game::render()
 {
 
-    const EArr<Spaceship>& ships = m_world.getEntities<Spaceship>();
     const EArr<Missile>& missiles = m_world.getEntities<Missile>();
+    const EArr<Alien>& aliens = m_world.getEntities<Alien>();
 
-    for (auto& s : ships)
-        m_window.draw(s);
+
     for (auto& m : missiles)
         m_window.draw(m);
+    for (auto& a : aliens)
+        m_window.draw(a);
 
     m_window.draw(m_stars);
+    m_window.draw(m_player.getShip());
 }
 

@@ -11,12 +11,12 @@ Spline::Spline(float stepSize, std::vector<Spline::Node> points):
     m_stepSize(stepSize)
 {
     setPoints(std::move(points));
-    calcLengths();
+    if (!m_points.empty()) calcLengths();
 }
 
-glm::vec2 Spline::getPoint(float pos) const
+glm::vec2 Spline::getPoint(float t) const
 {
-    float t = getOffset(pos);
+
     int p0, p1, p2, p3;
 
     p1 = (int)t + 1;
@@ -41,9 +41,8 @@ glm::vec2 Spline::getPoint(float pos) const
     return{ tx, ty };
 }
 
-glm::vec2 Spline::getGradient(float pos) const
+glm::vec2 Spline::getGradient(float t) const
 {
-    float t = getOffset(pos);
     int p0, p1, p2, p3;
 
     p1 = (int)t + 1;
@@ -92,17 +91,11 @@ float Spline::calcNodeLength(size_t node) const
     for (float t = 0; t < 1.f; t += m_stepSize)
     {
         newPoint = getPoint((float)node + t);
+
         length += glm::length(newPoint - oldPoint);
-        temp += std::sqrt(
-            (newPoint.x - oldPoint.x) * (newPoint.x - oldPoint.x) +
-            (newPoint.y - oldPoint.y) * (newPoint.y - oldPoint.y)
-        );
 
         oldPoint = newPoint;
     }
-
-    std::cout << "GLM::LENGTH: " << length << std::endl;
-    std::cout << "PLEB LENGTH: " << temp << std::endl;
 
     return length;
 }
@@ -124,23 +117,19 @@ float Spline::getOffset(float pos) const
 void Spline::calcLengths()
 {
     m_length = 0;
-    m_tailLength = 0;
-    for (size_t i = 0; i < m_points.size(); i++)
+    if (m_points.empty()) return;
+    for (size_t i = 0; i < m_points.size() - 3; i++)
     {
         const float segSize = (m_points[i].length = calcNodeLength(i));
         m_length += segSize;
-
-        if (i >= m_points.size() - 3)
-            m_tailLength += segSize;
     }
 }
 
 float Spline::clampPos(float pos) const
 {
-    const float end = m_length - m_tailLength;
 
-    if (pos >= end) return pos - end;
-    if (pos < 0.f) return pos + end;
+    if (pos >= m_length) return pos - m_length;
+    if (pos < 0.f) return pos + m_length;
 
     return pos;
 }

@@ -86,7 +86,6 @@ private:
 
         }
 
-        std::cout << entities.size() << std::endl;
         deleteQueue.clear();
     }
 };

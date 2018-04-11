@@ -3,8 +3,9 @@
 //
 
 #include "Defaults.h"
-#include "../Entities/Spaceship.h"
+#include "../Entities/Fighter.h"
 #include "../Entities/Missile.h"
+#include "../Entities/Alien.h"
 #include "TextureManager.h"
 #include "../Game/AssetPaths.h"
 #include "SpriteMap.h"
@@ -23,7 +24,7 @@ Missile& defaults::set(Missile& missile, SpriteType type)
     return missile;
 }
 
-Spaceship& defaults::set(Spaceship& spaceship, SpriteType type)
+Fighter& defaults::set(Fighter& spaceship, SpriteType type)
 {
     pure::Texture* spritesheet = TextureManager::instance().getTexture(paths::GalagaSpriteSheet);
     assert(spritesheet != nullptr);
@@ -35,4 +36,16 @@ Spaceship& defaults::set(Spaceship& spaceship, SpriteType type)
         spaceship.setTextureRect(spritemap::SHIP_RED);
 
     return spaceship;
+}
+
+Alien& defaults::set(Alien& alien, SpriteType type)
+{
+    pure::Texture* spritesheet = TextureManager::instance().getTexture(paths::GalagaSpriteSheet);
+    assert(spritesheet != nullptr);
+
+    alien.setTexture(spritesheet);
+    if (type == SpriteType::BEE)
+        alien.setTextureRect(spritemap::BEE_CLOSED);
+
+    return alien;
 }

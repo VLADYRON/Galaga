@@ -7,7 +7,7 @@
 
 #include <Pure2D/Renderables/Renderable.h>
 #include "Entity.h"
-#include "../Components/SpriteComponent.h"
+#include "../Components/Sprite.h"
 
 namespace pure
 {
@@ -28,7 +28,7 @@ public:
 
 private:
     void draw(SDL_Renderer* renderer) const final;
-    SpriteComponent m_sprite;
+    Sprite m_sprite;
 };
 
 

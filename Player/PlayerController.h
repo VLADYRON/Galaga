@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <functional>
 #include <Pure2D/Input/Keyboard.h>
-#include "../Entities/Spaceship.h"
+#include "../Entities/Fighter.h"
 
 
 union SDL_Event;
@@ -16,7 +16,7 @@ union SDL_Event;
 class PlayerController
 {
 public:
-    using GameAction = std::function<void(Spaceship&, float)>;
+    using GameAction = std::function<void(Fighter&, float)>;
 
     explicit PlayerController(World& world);
 
@@ -27,10 +27,10 @@ public:
     void removeKeybind(pure::keyboard::Key key);
     void changeKeybind(pure::keyboard::Key oldKey, pure::keyboard::Key newKey);
 
-    Spaceship& getShip();
+    Fighter& getShip();
 
 private:
-    Spaceship& m_player;
+    Fighter m_player;
     std::unordered_map<pure::keyboard::Key, GameAction> m_keybinds;
 
 };
