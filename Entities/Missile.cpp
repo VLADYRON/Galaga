@@ -8,8 +8,7 @@
 #include "Missile.h"
 #include "../Game/World.h"
 
-Missile::Missile(World &world)
-    : Entity(world)
+Missile::Missile()
 {
     setSize({ 50, 50 });
     setOrigin(getSize() / 2.f);

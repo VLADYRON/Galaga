@@ -5,9 +5,6 @@
 #include "SpaceEntity.h"
 #include "../Util/Rect.h"
 
-SpaceEntity::SpaceEntity(World& world):
-    Entity(world) { }
-
 SpaceEntity::~SpaceEntity() { }
 
 void SpaceEntity::draw(SDL_Renderer *renderer) const
@@ -33,3 +30,4 @@ glm::vec2 SpaceEntity::getCenterPos() const
 {
     return getTopLeft() + (getSize() / 2.f);
 }
+

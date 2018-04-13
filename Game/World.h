@@ -26,21 +26,17 @@ class World : private pure::NonCopyable
 {
 public:
 
-    /**
-    * Cleans up any queued entities in deletion queue to be deleted
-    */
-    void update();
 
     template<typename T>
-    const EArr<T> &getEntities()
+    const EArr<T*> &getEntities()
     {
-        return m_entityManager.get<T>();
+        return m_entityManager.get<T>().getActiveObjects();
     }
 
     template<typename T>
     T& instantiate(glm::vec2 position)
     {
-        T& entity = m_entityManager.create<T>(*this);
+        T& entity = m_entityManager.create<T>();
         entity.setPosition(position);
         return entity;
     }

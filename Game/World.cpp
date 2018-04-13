@@ -7,5 +7,3 @@
 
 
 using namespace pure;
-
-void World::update() { m_entityManager.update(); }

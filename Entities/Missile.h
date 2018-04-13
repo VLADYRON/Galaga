@@ -17,7 +17,7 @@ namespace pure
 class Missile : public Entity, public pure::Renderable
 {
 public:
-    explicit Missile(World& world);
+    explicit Missile();
     void setTextureRect(const SDL_Rect& rect);
     void setTexture(pure::Texture* texture);
 

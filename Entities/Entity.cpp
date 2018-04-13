@@ -2,10 +2,8 @@
 // Created by matt on 3/30/18.
 //
 
+#include <iostream>
 #include "Entity.h"
-
-Entity::Entity(World &world):
-    m_world(&world) { }
 
 Entity::~Entity() { }
 
@@ -33,5 +31,15 @@ void Entity::setOrigin(const glm::vec2 &origin)
 }
 
 glm::vec2 Entity::getTopLeft() const { return m_transform.position; }
+
+void Entity::activate()
+{
+    std::cout << "ENTITY ACTIVATE" << std::endl;
+}
+
+void Entity::deactivate()
+{
+    std::cout << "ENTITY DEACTIVATE" << std::endl;
+}
 
 

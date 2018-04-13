@@ -9,8 +9,7 @@
 #include "../Util/Defaults.h"
 #include <Pure2D/Util/Convert.h>
 
-Fighter::Fighter(World &world)
-    : SpaceEntity(world)
+Fighter::Fighter()
 {
     setSize({ 50, 50 });
     setOrigin(getSize() / 2.f);
@@ -23,6 +22,11 @@ void Fighter::fireMissile()
     glm::vec2 firePos = { shipPos.x, shipPos.y - getSize().y / 2.f };
     auto& m = m_world->instantiate<Missile>(firePos);
     defaults::set(m, SpriteType::MISSLE_PLAYER);
+}
+
+void Fighter::setWorld(World &world)
+{
+    m_world = &world;
 }
 
 

@@ -7,15 +7,18 @@
 
 
 #include "SpaceEntity.h"
-#include "../Util/SplinePath.h"
+#include "../Splines/SplinePath.h"
 
 class Alien : public SpaceEntity
 {
 public:
-    explicit Alien(World& world);
+    explicit Alien();
+    ~Alien();
 
-    void setDivepath(std::vector<Spline::Node> path);
+    void setDivepath(std::vector<Spline::Node> path, bool begin = true);
+    void startDivePath();
     void update(float deltaTime) final;
+
 
 private:
     float m_speed;

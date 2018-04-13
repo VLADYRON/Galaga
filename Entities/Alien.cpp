@@ -5,8 +5,7 @@
 #include <iostream>
 #include "Alien.h"
 
-Alien::Alien(World &world):
-        SpaceEntity(world),
+Alien::Alien():
         m_speed(350.f)
 {
     setSize({ 50, 50 });
@@ -26,8 +25,18 @@ void Alien::update(float deltaTime)
     }
 }
 
-void Alien::setDivepath(std::vector<Spline::Node> path)
+void Alien::setDivepath(std::vector<Spline::Node> path, bool begin)
 {
-    m_divePath.setPath(std::move(path));
+    m_divePath.setPath(std::move(path), begin);
+}
+
+void Alien::startDivePath()
+{
+    m_divePath.startPath();
+}
+
+Alien::~Alien()
+{
+
 }
 

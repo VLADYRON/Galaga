@@ -15,9 +15,14 @@ struct Rect;
 class Fighter : public SpaceEntity
 {
 public:
-    explicit Fighter(World& world);
+    explicit Fighter();
+
+    void setWorld(World& world);
 
     void fireMissile();
+
+private:
+    World* m_world;
 };
 
 

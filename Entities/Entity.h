@@ -13,8 +13,8 @@ class World;
 class Entity
 {
 public:
-    explicit Entity(World& world);
     virtual ~Entity() = 0;
+
 
     const Transform& getTransform() const;
     void setTransform(const Transform& transform);
@@ -49,9 +49,9 @@ public:
     void move(const glm::vec2& position);
 
     virtual void update(float deltaTime) { }
+    virtual void activate();
+    virtual void deactivate();
 
-protected:
-    World* m_world;
 
 private:
     Transform m_transform;

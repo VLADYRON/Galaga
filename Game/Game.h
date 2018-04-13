@@ -7,11 +7,7 @@
 
 #include <Pure2D/Util/Constants.h>
 #include <Pure2D/Window/Window.h>
-#include <vector>
-#include <Pure2D/Util/Random.h>
-#include "../Background/StarBackground.h"
-#include "../Player/PlayerController.h"
-#include "World.h"
+#include <Pure2D/State/StateManager.h>
 
 namespace pure
 {
@@ -30,9 +26,7 @@ public:
 
 private:
     pure::Window m_window;
-    World m_world;
-    PlayerController m_player;
-    StarBackground m_stars;
+    pure::StateManager m_stateManager;
 
     void handleEvents(const SDL_Event& event);
     void doLoop();

@@ -57,6 +57,6 @@ void SplinePath::setPath(std::vector<Spline::Node> path, bool begin)
     if (begin) startPath();
 }
 
-void SplinePath::setOnStart(SplinePath::PathAction callback) { m_onStart = callback; }
-void SplinePath::setOnDone(SplinePath::PathAction callback) { m_onDone = callback; }
+void SplinePath::setOnStart(SplinePath::PathAction callback) { m_onStart = std::move(callback); }
+void SplinePath::setOnDone(SplinePath::PathAction callback) { m_onDone = std::move(callback); }
 

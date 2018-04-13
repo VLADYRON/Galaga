@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <Pure2D/Util/Constants.h>
 #include <iostream>
+#include "ObjectPool.h"
+#include "Poolable.h"
 
 template<typename T>
 using EArr = std::vector<T>;
@@ -18,29 +20,17 @@ template<pure::uint32 poolsize, typename ...Args>
 class EntityManager
 {
 public:
-    EntityManager()
+    EntityManager():
+        m_entities(std::make_tuple(ObjectPool<Args>(poolsize)...))
     {
-        m_entities = std::make_tuple(EArr<Args>()...);
-        ( std::get<EArr<Args>>(m_entities).reserve(poolsize), ... );
     }
 
-    /**
-     * Cleans up any queued entities in deletion queue to be deleted
-     */
-    void update()
+
+    template<typename T>
+    T& create()
     {
-        ( deleteQueue<Args>(std::get<EArr<Args*>>(m_deletionQueue)), ... );
-    }
-
-    template<typename T, typename ...CtorParams>
-    T& create(CtorParams&&... ctorParams)
-    {
-        EArr<T>& entities = std::get<EArr<T>>(m_entities);
-
-        assert(entities.size() <= poolsize);
-
-        entities.emplace_back(std::forward<CtorParams>(ctorParams)...);
-        return entities.back();
+        ObjectPool<T>& pool = std::get<ObjectPool<T>>(m_entities);
+        return *pool.create();
     };
 
     /**
@@ -51,43 +41,20 @@ public:
     template<typename T>
     void destroy(T* entity)
     {
-        EArr<T*>& queue = std::get<EArr<T*>>(m_deletionQueue);
-        queue.push_back(entity);
+        ObjectPool<T> pool = std::get<ObjectPool<T>>(m_entities);
+        pool.destroy(entity);
     }
 
     template<typename T>
-    const EArr<T>& get()
+    const ObjectPool<T>& get()
     {
-        return std::get<EArr<T>>(m_entities);
+        return std::get<ObjectPool<T>>(m_entities);
     }
 
 
 private:
-    std::tuple<EArr<Args>...> m_entities;
-    std::tuple<EArr<Args*>...> m_deletionQueue;
-
-    // TODO: This can be refactored to a true 'Pool' of entities where
-    // entities aren't deleted, just deactivated.
-    template<typename T>
-    void deleteQueue(EArr<T*>& deleteQueue)
-    {
-        EArr<T>& entities = std::get<EArr<T>>(m_entities);
-
-        if (deleteQueue.empty()) return;
-
-        for (auto de : deleteQueue)
-        {
-            auto itr = std::find_if(entities.begin(), entities.end(), [de](T& e) {
-                return &e == de;
-            });
-
-            if (itr != entities.end())
-                entities.erase(itr);
-
-        }
-
-        deleteQueue.clear();
-    }
+    std::tuple<ObjectPool<Args>...> m_entities;
 };
+
 
 #endif //GALAGA_ENTITYMANAGER_H

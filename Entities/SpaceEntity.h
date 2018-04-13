@@ -15,7 +15,6 @@ struct Rect;
 class SpaceEntity : public Entity, public pure::Renderable
 {
 public:
-    explicit SpaceEntity(World& world);
     virtual ~SpaceEntity() = 0;
     void setTextureRect(const SDL_Rect& rect);
     void setTexture(pure::Texture* texture);
