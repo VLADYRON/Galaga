@@ -40,9 +40,7 @@ void Game::start()
         textureManager.addTexture(paths::GalagaSpriteSheet, spritesheet);
     }
 
-    m_stateManager.registerState((int)GameState::Playing, [this](pure::StateManager& manager) {
-        return std::make_unique<PlayState>(manager, m_window);
-    });
+    m_stateManager.registerState<PlayState>((int)GameState::Playing, &m_window);
 
     m_stateManager.pushState((int)GameState::Playing);
 

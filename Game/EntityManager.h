@@ -21,7 +21,7 @@ class EntityManager
 {
 public:
     EntityManager():
-        m_entities(std::make_tuple(ObjectPool<Args>(poolsize)...))
+        m_entities(std::make_tuple(ObjectPool<Args>()...))
     {
     }
 
@@ -41,7 +41,7 @@ public:
     template<typename T>
     void destroy(T* entity)
     {
-        ObjectPool<T> pool = std::get<ObjectPool<T>>(m_entities);
+        ObjectPool<T>& pool = std::get<ObjectPool<T>>(m_entities);
         pool.destroy(entity);
     }
 

@@ -19,10 +19,9 @@ class ObjectPool
     static_assert(std::is_base_of<Entity, T>::value);
 public:
 
-    explicit ObjectPool(size_t maxSize): m_maxSize(maxSize)
+    explicit ObjectPool() : m_maxSize(50)
     {
-        m_objects.reserve(m_maxSize);
-        m_objects.assign(m_maxSize, Poolable<T>());
+        m_objects.resize(m_maxSize);
         // NOTE: Maybe this is getting invalidated somehow?
         m_firstAvailable = &m_objects[0];
 
@@ -36,13 +35,14 @@ public:
         m_activeObjects.reserve(m_maxSize);
     }
 
-    // TODO: FIND OUT WHY THE FUCK THIS DESTRUCTOR CAUSES SEGFAULT WHEN CALLING obj->activate IN CREATE METHOD
-    // WTFWTFWTFWTFWTFWTFWTFWTF FUCKING END MY LIFE RIGHT NOW PLEASE
-
-    // Seriously though might have something to do with the EntityManager class and the tuple
-    // containing object pools...
-
-//    ~ObjectPool() = default;
+    ObjectPool(ObjectPool<T> &&other) noexcept:
+        m_maxSize(other.m_maxSize),
+        m_objects(std::move(other.m_objects)),
+        m_activeObjects(std::move(other.m_activeObjects))
+    {
+        m_firstAvailable = other.m_firstAvailable;
+        other.m_firstAvailable = nullptr;
+    }
 
     T* create()
     {

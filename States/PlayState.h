@@ -13,11 +13,11 @@
 class PlayState : public pure::State
 {
 public:
-    PlayState(pure::StateManager& manager, pure::Window& window);
+    PlayState(pure::StateManager& manager, pure::Window* window);
 
 private:
 
-    pure::Window& m_window;
+    pure::Window* m_window;
     World m_world;
     PlayerController m_player;
     StarBackground m_stars;
