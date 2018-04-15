@@ -9,6 +9,12 @@
 #include "../Game/World.h"
 #include "../Player/PlayerController.h"
 #include "../Background/StarBackground.h"
+#include "../Entities/AlienGroup.h"
+
+namespace
+{
+    class Renderable;
+}
 
 class PlayState : public pure::State
 {
@@ -18,6 +24,7 @@ public:
 private:
 
     pure::Window* m_window;
+    AlienGroup m_alienGroup;
     World m_world;
     PlayerController m_player;
     StarBackground m_stars;
@@ -26,6 +33,8 @@ private:
     void draw(const pure::Window& window) final;
     void handleInput(const SDL_Event& event) final;
     void onCreate() final;
+
+    void setPlayerKeybinds();
 };
 
 

@@ -11,7 +11,6 @@
 #include <Pure2D/Util/Constants.h>
 #include <iostream>
 #include "ObjectPool.h"
-#include "Poolable.h"
 
 template<typename T>
 using EArr = std::vector<T>;
@@ -21,7 +20,7 @@ class EntityManager
 {
 public:
     EntityManager():
-        m_entities(std::make_tuple(ObjectPool<Args>()...))
+        m_entities(std::make_tuple(ObjectPool<Args>(poolsize)...))
     {
     }
 

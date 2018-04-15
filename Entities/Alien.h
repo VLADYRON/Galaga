@@ -12,16 +12,22 @@
 class Alien : public SpaceEntity
 {
 public:
-    explicit Alien();
-    ~Alien();
 
-    void setDivepath(std::vector<Spline::Node> path, bool begin = true);
+    static constexpr float minStopDist = 2.f;
+
+    explicit Alien();
+
+    bool isDiving() const;
+
+    void setDivePath(std::vector<Spline::Node> path, bool begin = true);
     void startDivePath();
     void update(float deltaTime) final;
 
 
 private:
     float m_speed;
+    bool m_isDiving;
+
     SplinePath m_divePath;
 };
 

@@ -32,14 +32,12 @@ void Entity::setOrigin(const glm::vec2 &origin)
 
 glm::vec2 Entity::getTopLeft() const { return m_transform.position; }
 
-void Entity::activate()
-{
-    std::cout << "ENTITY ACTIVATE" << std::endl;
-}
+void Entity::activate() { m_isActive = true; }
+void Entity::deactivate() { m_isActive = false; }
 
-void Entity::deactivate()
+bool Entity::isActive() const
 {
-    std::cout << "ENTITY DEACTIVATE" << std::endl;
+    return m_isActive;
 }
 
 

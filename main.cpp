@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Game/Game.h"
-#include "Game/Poolable.h"
 #include "Entities/Alien.h"
 #include "Game/ObjectPool.h"
 #include <glm/glm.hpp>

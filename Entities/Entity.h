@@ -7,15 +7,18 @@
 
 #include <Pure2D/Renderables/Renderable.h>
 #include "../Components/Transform.h"
+#include "../Interface/LifeCycle.h"
+
 struct SDL_Renderer;
 class World;
 
-class Entity
+class Entity : public LifeCycle
 {
 public:
     virtual ~Entity() = 0;
 
 
+    bool isActive() const;
     const Transform& getTransform() const;
     void setTransform(const Transform& transform);
 
@@ -49,12 +52,12 @@ public:
     void move(const glm::vec2& position);
 
     virtual void update(float deltaTime) { }
-    virtual void activate();
-    virtual void deactivate();
-
+    void activate() override;
+    void deactivate() override;
 
 private:
     Transform m_transform;
+    bool m_isActive;
 };
 
 

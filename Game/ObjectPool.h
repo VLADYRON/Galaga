@@ -10,16 +10,26 @@
 #include <vector>
 #include <cassert>
 #include <algorithm>
-#include "Poolable.h"
-#include "../Entities/Entity.h"
+#include "../Interface/LifeCycle.h"
+
+// TODO: Move this to Pure2D library (along with LifeCycle interface)
 
 template <typename T>
-class ObjectPool
+class ObjectPool : private pure::NonCopyable
 {
-    static_assert(std::is_base_of<Entity, T>::value);
+    static_assert(std::is_base_of<LifeCycle, T>::value);
+private:
+    template<typename P>
+    class Poolable : public P
+    {
+        friend ObjectPool<P>;
+
+        Poolable<P>* next;
+    };
+
 public:
 
-    explicit ObjectPool() : m_maxSize(50)
+    explicit ObjectPool(size_t size) : m_maxSize(size)
     {
         m_objects.resize(m_maxSize);
         // NOTE: Maybe this is getting invalidated somehow?
@@ -69,7 +79,6 @@ public:
 
         m_firstAvailable = destroyTarget;
 
-        // TODO: Destroyed values are magically coming back... find out why...
         auto removeItr = std::remove_if(m_activeObjects.begin(), m_activeObjects.end(),
            [object](T* o) { return o == object; });
 

@@ -3,19 +3,23 @@
 //
 
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <Pure2D/Util/Constants.h>
 #include "Alien.h"
 
 Alien::Alien():
-        m_speed(350.f)
+        m_speed(350.f),
+        m_isDiving(false)
 {
     setSize({ 50, 50 });
     setOrigin(getSize() / 2.f);
 
-    m_divePath.setOnDone([](){ std::cout << "PATH END" << std::endl; });
 }
 
 void Alien::update(float deltaTime)
 {
+    // TODO: Maybe refactor all this logic for moving along spline into separate component/class
     if (!m_divePath.isDone())
     {
         SplinePath::ResultPoint rp = m_divePath.getNextStep(deltaTime * m_speed);
@@ -23,20 +27,38 @@ void Alien::update(float deltaTime)
         setPosition(rp.pos);
         setRotation(rp.forwardRotation);
     }
+    else
+    {
+        if (!m_isDiving) return;
+        const glm::vec2 target = { 50, 50 };
+        glm::vec2 dir = target - getPosition();
+
+        if (glm::length(dir) <= minStopDist)
+        {
+            setRotation(180.f); // face toward bottom of screen
+            m_isDiving = true;
+            return;
+        }
+
+
+        const float rot = (std::atan2(dir.y, dir.x) * pure::RAD_TO_DEG) + 90.f;
+        setRotation(rot);
+
+        move(glm::normalize(dir) * m_speed * deltaTime);
+    }
 }
 
-void Alien::setDivepath(std::vector<Spline::Node> path, bool begin)
+void Alien::setDivePath(std::vector<Spline::Node> path, bool begin)
 {
+    if (begin) m_isDiving = true;
     m_divePath.setPath(std::move(path), begin);
 }
 
 void Alien::startDivePath()
 {
     m_divePath.startPath();
+    m_isDiving = true;
 }
 
-Alien::~Alien()
-{
-
-}
+bool Alien::isDiving() const { return !m_divePath.isDone(); }
 
