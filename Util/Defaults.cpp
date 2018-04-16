@@ -2,6 +2,7 @@
 // Created by matt on 3/31/18.
 //
 
+#include <iostream>
 #include "Defaults.h"
 #include "../Entities/Fighter.h"
 #include "../Entities/Missile.h"
@@ -44,8 +45,25 @@ Alien& defaults::set(Alien& alien, SpriteType type)
     assert(spritesheet != nullptr);
 
     alien.setTexture(spritesheet);
-    if (type == SpriteType::BEE)
-        alien.setTextureRect(spritemap::BEE_CLOSED);
+    SDL_Rect textureRect{};
+    switch (type)
+    {
+        case SpriteType::BEE:
+            textureRect = spritemap::BEE_OPEN;
+            break;
+        case SpriteType::MOTH:
+            textureRect = spritemap::MOTH_OPEN;
+            break;
+        case SpriteType::CATCHER:
+            textureRect = spritemap::CATCHER_TURQUOISE_OPEN;
+            break;
+        default:
+            std::cout << "Given spritetype not defined for set function of type Alien" << std::endl;
+    }
+
+
+    alien.setTextureRect(textureRect);
+    alien.setType(type);
 
     return alien;
 }

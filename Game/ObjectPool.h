@@ -42,13 +42,13 @@ public:
 
         m_objects.back().next = nullptr;
 
-        m_activeObjects.reserve(m_maxSize);
+        m_liveObjects.reserve(m_maxSize);
     }
 
     ObjectPool(ObjectPool<T> &&other) noexcept:
         m_maxSize(other.m_maxSize),
         m_objects(std::move(other.m_objects)),
-        m_activeObjects(std::move(other.m_activeObjects))
+        m_liveObjects(std::move(other.m_liveObjects))
     {
         m_firstAvailable = other.m_firstAvailable;
         other.m_firstAvailable = nullptr;
@@ -63,7 +63,7 @@ public:
 
         m_firstAvailable = obj->next;
 
-        m_activeObjects.push_back(obj);
+        m_liveObjects.push_back(obj);
 
         return obj;
     }
@@ -79,39 +79,45 @@ public:
 
         m_firstAvailable = destroyTarget;
 
-        auto removeItr = std::remove_if(m_activeObjects.begin(), m_activeObjects.end(),
+        auto removeItr = std::remove_if(m_liveObjects.begin(), m_liveObjects.end(),
            [object](T* o) { return o == object; });
 
-        m_activeObjects.erase(removeItr, m_activeObjects.end());
+        m_liveObjects.erase(removeItr, m_liveObjects.end());
     }
 
     void destroy(int objectIndx)
     {
-        T* obj = m_activeObjects[objectIndx];
+        T* obj = m_liveObjects[objectIndx];
 
         obj->deactivate();
         obj->next = m_firstAvailable;
         m_firstAvailable = obj;
 
-        m_activeObjects.erase(m_activeObjects.begin() + objectIndx);
+        m_liveObjects.erase(m_liveObjects.begin() + objectIndx);
     }
 
-    const std::vector<T*>& getActiveObjects() const
+    /**
+     * Gets objects all objects that have been created
+     * NOTE: This will still return potentially deactivated objects if object was not destroyed
+     * @return all objects that have been created
+     */
+    const std::vector<T*>& getLiveObjects() const
     {
-        return m_activeObjects;
+        return m_liveObjects;
     }
 
     // Destroy and set all active objects to not active state
     void reset()
     {
-        for (int i = (int)m_activeObjects.size() - 1; i >= 0; i--)
+        for (int i = (int)m_liveObjects.size() - 1; i >= 0; i--)
             destroy(i);
     }
+
 
 private:
 
     std::vector<Poolable<T>> m_objects;
-    std::vector<T*> m_activeObjects;
+    std::vector<T*> m_liveObjects;
     Poolable<T>* m_firstAvailable;
     const size_t m_maxSize;
 };

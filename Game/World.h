@@ -30,7 +30,7 @@ public:
     template<typename T>
     const EArr<T*> &getEntities()
     {
-        return m_entityManager.get<T>().getActiveObjects();
+        return m_entityManager.get<T>().getLiveObjects();
     }
 
     template<typename T>

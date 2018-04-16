@@ -7,12 +7,14 @@
 
 enum class SpriteType
 {
-    SHIP_WHITE,
+    SHIP_WHITE = 0,
     SHIP_RED,
     MISSLE_ENEMY,
     MISSLE_PLAYER,
     // TODO: Add more sprite types?
-    BEE
+    BEE,
+    MOTH,
+    CATCHER
 };
 
 class Fighter;

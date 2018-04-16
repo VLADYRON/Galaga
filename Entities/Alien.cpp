@@ -29,14 +29,15 @@ void Alien::update(float deltaTime)
     }
     else
     {
+        // TODO: Maybe have AlienGroup class handle this part...
         if (!m_isDiving) return;
-        const glm::vec2 target = { 50, 50 };
-        glm::vec2 dir = target - getPosition();
+        glm::vec2 dir = m_groupCell.position - getPosition();
 
         if (glm::length(dir) <= minStopDist)
         {
             setRotation(180.f); // face toward bottom of screen
-            m_isDiving = true;
+            setPosition(m_groupCell.position);
+            m_isDiving = false;
             return;
         }
 
@@ -60,5 +61,11 @@ void Alien::startDivePath()
     m_isDiving = true;
 }
 
-bool Alien::isDiving() const { return !m_divePath.isDone(); }
+bool Alien::isDiving() const { return m_isDiving; }
+
+void Alien::setGroupCell(GroupCell cell) { m_groupCell = cell; }
+GroupCell Alien::groupCell() const { return m_groupCell; }
+
+void Alien::setType(SpriteType type) { m_type = type; }
+SpriteType Alien::type() const { return m_type; }
 

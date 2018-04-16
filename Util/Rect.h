@@ -14,9 +14,9 @@ struct Rect
 
     explicit operator SDL_Rect() const { return { (int)x, (int)y, (int)w,(int) h }; }
 
-    bool isOutside(const glm::vec2& point);
+    bool isOutside(const glm::vec2& point) const;
 
-    bool isInside(const glm::vec2& point);
+    bool isInside(const glm::vec2& point) const;
 };
 
 #endif //GALAGA_RECT_H

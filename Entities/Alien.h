@@ -8,14 +8,22 @@
 
 #include "SpaceEntity.h"
 #include "../Splines/SplinePath.h"
+#include "../Util/Defaults.h"
+#include "../Components/GroupCell.h"
 
 class Alien : public SpaceEntity
 {
 public:
 
-    static constexpr float minStopDist = 2.f;
+    static constexpr float minStopDist = 3.f;
 
     explicit Alien();
+
+    void setType(SpriteType type);
+    SpriteType type() const;
+
+    void setGroupCell(GroupCell cell);
+    GroupCell groupCell() const;
 
     bool isDiving() const;
 
@@ -27,6 +35,8 @@ public:
 private:
     float m_speed;
     bool m_isDiving;
+    SpriteType m_type;
+    GroupCell m_groupCell;
 
     SplinePath m_divePath;
 };
