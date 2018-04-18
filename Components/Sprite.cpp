@@ -24,7 +24,10 @@ void Sprite::draw(SDL_Renderer *renderer, const Transform &transform, SDL_Render
     assert(textureRect != std::nullopt);
     assert(texture != nullptr);
 
-    SDL_Rect drawRect = { (int)transform.position.x, (int)transform.position.y, (int)size.x, (int)size.y };
+    const SDL_Point pos = pure::vecToPoint(transform.position);
+    const SDL_Point drawSize = pure::vecToPoint(size);
+
+    SDL_Rect drawRect = { pos.x, pos.y, drawSize.x, drawSize.y };
     SDL_Point rotPoint = pure::vecToPoint(transform.origin);
 
     SDL_RenderCopyEx(

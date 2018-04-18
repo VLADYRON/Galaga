@@ -40,9 +40,12 @@ void Game::start()
         textureManager.addTexture(paths::GalagaSpriteSheet, spritesheet);
     }
 
-    m_stateManager.registerState<PlayState>((int)GameState::Playing, &m_window);
+    {
+        auto playState = static_cast<int>(GameState::Playing);
+        m_stateManager.registerState<PlayState>(playState, &m_window);
+        m_stateManager.pushState(playState);
+    }
 
-    m_stateManager.pushState((int)GameState::Playing);
 
     doLoop();
 }
@@ -67,7 +70,6 @@ void Game::doLoop()
 
     const float dt = 1.f / 60.f;
     float accum = 0.f;
-
 
     while(m_window.isOpen())
     {

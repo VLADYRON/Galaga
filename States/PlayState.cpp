@@ -3,7 +3,6 @@
 //
 
 #include "PlayState.h"
-#include <Pure2D/Window/Window.h>
 #include <Pure2D/Util/Convert.h>
 #include "../Entities/Entity.h"
 #include "../Util/Defaults.h"
@@ -85,12 +84,8 @@ void PlayState::draw(const pure::Window &window)
     const EArr<Alien*>& aliens = m_world.getEntities<Alien>();
 
 
-    for (auto m : missiles)
-        m_window->draw(*m);
-    for (auto a : aliens)
-        m_window->draw(*a);
-
-
+    for (auto m : missiles) drawEntity(m);
+    for (auto a : aliens) drawEntity(a);
 
     m_window->draw(m_stars);
     m_window->draw(m_player.getShip());
@@ -125,7 +120,6 @@ void PlayState::draw(const pure::Window &window)
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
     SDL_RenderDrawPoints(r, bees, 20);
 
-
 }
 
 void PlayState::handleInput(const SDL_Event &event)
@@ -138,4 +132,3 @@ void PlayState::handleInput(const SDL_Event &event)
         m_alienGroup.m_rect.x -= 5.f;
 
 }
-

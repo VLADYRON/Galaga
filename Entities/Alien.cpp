@@ -8,6 +8,8 @@
 #include <Pure2D/Util/Constants.h>
 #include "Alien.h"
 
+constexpr float minStopDist = 3.f;
+
 Alien::Alien():
         m_speed(350.f),
         m_isDiving(false)

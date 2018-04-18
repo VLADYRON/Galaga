@@ -11,6 +11,7 @@
 #include <Pure2D/Util/Clock.h>
 #include <glm/vec2.hpp>
 #include "../Util/Defaults.h"
+#include "../Util/Rect.h"
 #include "../Game/World.h"
 #include "../Entities/Alien.h"
 
@@ -29,7 +30,7 @@ public:
     void start();
 
     void move(glm::vec2 offset);
-    SDL_Rect boundingRect() const;
+    Rect boundingRect() const;
 
     void setMoveDir(float dir);
 
@@ -40,12 +41,12 @@ public:
     std::array<glm::vec2, 4> m_catcherPos;
     std::array<glm::vec2, 16> m_mothPos;
     std::array<glm::vec2, 20> m_beePos;
-    SDL_Rect m_rect;
+    Rect m_rect;
 private:
-    static constexpr float m_moveTickDir = 0.5f;
     static const glm::vec2 m_size;
     float m_moveDir;
     glm::vec2 m_boundary;
+    glm::vec2 m_cellSize;
 
     World& m_world;
     pure::Clock m_spawnTimer;
@@ -56,7 +57,7 @@ private:
     std::vector<Alien*> m_divingAliens;
 
     void startSpawnDives();
-    void setGroupPositions(const glm::vec2& cellSize);
+    void setGroupPositions();
 
     template<size_t size>
     void assignPositions(glm::vec2 cellSize, glm::vec2 offset, std::array<glm::vec2, size>& positions)

@@ -15,8 +15,6 @@ class Alien : public SpaceEntity
 {
 public:
 
-    static constexpr float minStopDist = 3.f;
-
     explicit Alien();
 
     void setType(SpriteType type);

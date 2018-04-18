@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <cmath>
 #include <glm/glm.hpp>
+#include <Pure2D/Util/Convert.h>
 
 using pure::uint64;
 
@@ -23,9 +24,10 @@ void StarBackground::create(int numStars, float speed, const glm::vec2 &bounds)
 
     for (int i = 0; i < numStars; i++)
     {
+        const SDL_Point bp = pure::vecToPoint(bounds);
         SDL_Point star = {
-            m_rand((int)bounds.x),
-            m_rand((int)bounds.y)
+            m_rand(bp.x),
+            m_rand(bp.y)
         };
         m_stars.push_back(star);
     }
@@ -44,7 +46,8 @@ void StarBackground::update(float deltaTime)
 
         if (star.y > m_bounds.y)
         {
-            star.x = m_rand((int)m_bounds.x);
+            auto bx = static_cast<int>(m_bounds.x);
+            star.x = m_rand(bx);
             star.y = 0;
         }
     }
@@ -53,7 +56,7 @@ void StarBackground::update(float deltaTime)
 void StarBackground::draw(SDL_Renderer *renderer) const
 {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawPoints(renderer, &m_stars[0], (int)m_stars.size());
+    SDL_RenderDrawPoints(renderer, &m_stars[0], m_stars.size());
 }
 
 

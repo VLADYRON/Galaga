@@ -109,7 +109,8 @@ public:
     // Destroy and set all active objects to not active state
     void reset()
     {
-        for (int i = (int)m_liveObjects.size() - 1; i >= 0; i--)
+        auto objSize = static_cast<int>(m_liveObjects.size());
+        for (int i = objSize - 1; i >= 0; i--)
             destroy(i);
     }
 

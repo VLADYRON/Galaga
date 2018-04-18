@@ -12,7 +12,7 @@ void SpaceEntity::draw(SDL_Renderer *renderer) const
     assert(m_sprite.textureRect != std::nullopt);
 
     m_sprite.draw(renderer, getTransform());
-    SDL_Rect rect = (SDL_Rect)getBoundingRect();
+//    auto rect = static_cast<SDL_Rect>(getBoundingRect());
 }
 
 void SpaceEntity::setTextureRect(const SDL_Rect &rect) { m_sprite.textureRect = rect; }
