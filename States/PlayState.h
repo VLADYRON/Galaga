@@ -10,7 +10,7 @@
 #include "../Game/World.h"
 #include "../Player/PlayerController.h"
 #include "../Background/StarBackground.h"
-#include "../Entities/AlienGroup.h"
+#include "../Scripts/AlienGroup.h"
 
 
 class PlayState : public pure::State

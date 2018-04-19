@@ -14,16 +14,26 @@
 #include "../Util/Rect.h"
 #include "../Game/World.h"
 #include "../Entities/Alien.h"
+#include "AlienSpawner.h"
 
 class Alien;
 class World;
 
-class AlienGroup
+class AlienGroup : private pure::NonCopyable
 {
+private:
+//    struct SpawnGroupCollection
+//    {
+//        Alien* get(int x, int y);
+//        std::vector<Alien*> getRow(int row);
+//        std::array<Alien*, 40> groups;
+//    private:
+//        static constexpr int m_width = 8;
+//    };
+
 public:
     explicit AlienGroup(World& world, glm::vec2 cellSize, glm::vec2 boundary);
 
-    void spawnAliens(size_t count, SpriteType type);
 
     void update(float deltaTime);
     void reset();
@@ -45,19 +55,28 @@ public:
 private:
     static const glm::vec2 m_size;
     float m_moveDir;
+    bool m_needsSpawn;
     glm::vec2 m_boundary;
     glm::vec2 m_cellSize;
 
     World& m_world;
+    pure::Clock m_moveTimer;
     pure::Clock m_spawnTimer;
-    pure::Clock m_tickTimer;
-    size_t m_diveIndx;
+    AlienSpawner m_spawner;
+//    SpawnGroupCollection m_groups;
 
     std::vector<Alien*> m_aliens;
-    std::vector<Alien*> m_divingAliens;
 
-    void startSpawnDives();
-    void setGroupPositions();
+    // TEMP
+    std::vector<Alien*> m_spawnOrder;
+    int m_spawnOrderIndx = 0;
+    // END TEMP
+
+    void spawnAliens();
+    void setupGroupPositions();
+    void setupSpawnGroups();
+    void move();
+    bool hasPendingAliens() const;
 
     template<size_t size>
     void assignPositions(glm::vec2 cellSize, glm::vec2 offset, std::array<glm::vec2, size>& positions)

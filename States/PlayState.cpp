@@ -27,8 +27,8 @@ void PlayState::onCreate()
         (m_window->getSize().y - playerShip.getSize().y / 2.f)
     };
 
-    m_alienGroup.spawnAliens(20, SpriteType::BEE);
-
+//    m_alienGroup.spawnAliens(20, SpriteType::BEE);
+    m_alienGroup.start();
     playerShip.setPosition(position);
 
     setPlayerKeybinds();
