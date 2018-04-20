@@ -37,14 +37,14 @@ public:
     float clampPos(float pos) const;
 
     void setPoints(std::vector<Node> points);
-    void setPoint(size_t index, Node point);
+    void setPoint(uint32_t index, Node point);
 
 private:
     std::vector<Node> m_points;
     float m_stepSize;
     float m_length;
 
-    float calcNodeLength(size_t node) const;
+    float calcNodeLength(uint32_t  node) const;
     void calcLengths();
 
 

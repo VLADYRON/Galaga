@@ -15,7 +15,7 @@
 template<typename T>
 using EArr = std::vector<T>;
 
-template<pure::uint32 poolsize, typename ...Args>
+template<uint32_t poolsize, typename ...Args>
 class EntityManager
 {
 public:

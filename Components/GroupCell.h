@@ -10,7 +10,7 @@
 struct GroupCell
 {
     glm::vec2 position;
-    size_t index;
+    uint32_t index;
 };
 
 #endif //GALAGA_GROUPCELL_H

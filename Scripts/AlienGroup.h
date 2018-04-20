@@ -21,19 +21,8 @@ class World;
 
 class AlienGroup : private pure::NonCopyable
 {
-private:
-//    struct SpawnGroupCollection
-//    {
-//        Alien* get(int x, int y);
-//        std::vector<Alien*> getRow(int row);
-//        std::array<Alien*, 40> groups;
-//    private:
-//        static constexpr int m_width = 8;
-//    };
-
 public:
     explicit AlienGroup(World& world, glm::vec2 cellSize, glm::vec2 boundary);
-
 
     void update(float deltaTime);
     void reset();
@@ -47,13 +36,13 @@ public:
     void setPosition(glm::vec2 pos);
     glm::vec2 position() const;
 
-    // TODO: move this back to private when done debugging
+private:
+    static const glm::vec2 m_size;
+
     std::array<glm::vec2, 4> m_catcherPos;
     std::array<glm::vec2, 16> m_mothPos;
     std::array<glm::vec2, 20> m_beePos;
     Rect m_rect;
-private:
-    static const glm::vec2 m_size;
     float m_moveDir;
     bool m_needsSpawn;
     glm::vec2 m_boundary;
@@ -63,18 +52,14 @@ private:
     pure::Clock m_moveTimer;
     pure::Clock m_spawnTimer;
     AlienSpawner m_spawner;
-//    SpawnGroupCollection m_groups;
 
     std::vector<Alien*> m_aliens;
+    uint32_t m_spawnOrderIndx = 0;
 
-    // TEMP
-    std::vector<Alien*> m_spawnOrder;
-    int m_spawnOrderIndx = 0;
-    // END TEMP
 
     void spawnAliens();
     void setupGroupPositions();
-    void setupSpawnGroups();
+    void initAliens();
     void move();
     bool hasPendingAliens() const;
 
@@ -102,13 +87,15 @@ private:
         }
     }
 
+
     template<size_t size>
-    void initAliens(std::array<glm::vec2, size>& positions, SpriteType type)
+    void createAliens(std::array<glm::vec2, size>& positions, SpriteType type, uint32_t start, uint32_t count)
     {
         // default to offscreen pos
         static const glm::vec2 startPos = { -100, -100 };
+        const uint32_t end = start + count;
 
-        for (size_t i = 0; i < positions.size(); i++)
+        for (uint32_t i = start; i < end; i++)
         {
             Alien* alien = &m_world.instantiate<Alien>(startPos);
             defaults::set(*alien, type);

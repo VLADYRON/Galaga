@@ -10,7 +10,7 @@
 #include "../Util/Rect.h"
 
 constexpr float moveTickDir = 0.5f;
-constexpr float spawnDely = 1.5f;
+constexpr float spawnDelay = 1.5f;
 const glm::vec2 AlienGroup::m_size = { 10, 5 };
 
 AlienGroup::AlienGroup(World &world, glm::vec2 cellSize, glm::vec2 boundary):
@@ -33,7 +33,7 @@ AlienGroup::AlienGroup(World &world, glm::vec2 cellSize, glm::vec2 boundary):
 void AlienGroup::update(float deltaTime)
 {
 
-    if (m_needsSpawn && m_spawnTimer.getElapsedTime() >= spawnDely)
+    if (m_needsSpawn && m_spawnTimer.getElapsedTime() >= spawnDelay)
         spawnAliens();
 
     m_spawner.update();
@@ -71,7 +71,7 @@ void AlienGroup::spawnAliens()
 
     for (int i = 0; i < 8; i++)
     {
-        Alien* alien = m_spawnOrder[m_spawnOrderIndx++];
+        Alien* alien = m_aliens[m_spawnOrderIndx++];
 
         alien->setDivePath(splinePaths::doubleLoopLeft({-107, 787}), false);
         m_spawner.addAlien(alien);
@@ -113,18 +113,15 @@ void AlienGroup::reset()
 void AlienGroup::start()
 {
 
-    initAliens(m_catcherPos, SpriteType::CATCHER);
-    initAliens(m_mothPos, SpriteType::MOTH);
-    initAliens(m_beePos, SpriteType::BEE);
-
-    m_spawnOrder = std::vector<Alien*>(m_aliens);
-
     {
         std::random_device rd;
         std::mt19937 g(rd());
 
-        std::shuffle(m_spawnOrder.begin(), m_spawnOrder.end(), g);
+        std::shuffle(m_mothPos.begin(), m_mothPos.end(), g);
+        std::shuffle(m_beePos.begin(), m_beePos.end(), g);
     }
+
+    initAliens();
 
     m_moveTimer.restart();
     m_spawnTimer.restart();
@@ -184,24 +181,19 @@ bool AlienGroup::hasPendingAliens() const
     return m_spawnOrderIndx < m_aliens.size();
 }
 
-void AlienGroup::setupSpawnGroups()
+void AlienGroup::initAliens()
 {
-    // TODO: ???????
-}
-// Don't know if we need this yet or not.
+    uint32_t mothIndx = 0;
+    uint32_t beeIndx = 0;
 
-//Alien *AlienGroup::SpawnGroupCollection::get(int x, int y)
-//{
-//    return groups[m_width * y + x];
-//}
-//
-//std::vector<Alien *> AlienGroup::SpawnGroupCollection::getRow(int row)
-//{
-//    std::vector<Alien*> aliens;
-//    const int begin = m_width * row;
-//
-//    for (int i = begin; i < begin + m_width; i++)
-//        aliens.push_back(groups[i]);
-//
-//    return aliens;
-//}
+    createAliens(m_beePos, SpriteType::BEE, beeIndx, 4); beeIndx += 4;
+    createAliens(m_mothPos, SpriteType::MOTH, mothIndx, 4); mothIndx += 4;
+
+    createAliens(m_catcherPos, SpriteType::CATCHER, 0, 4);
+    createAliens(m_mothPos, SpriteType::MOTH, mothIndx, 4); mothIndx += 4;
+    createAliens(m_mothPos, SpriteType::MOTH, mothIndx, 8); mothIndx += 8;
+
+    createAliens(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
+    createAliens(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
+}
+

@@ -90,45 +90,10 @@ void PlayState::draw(const pure::Window &window)
     m_window->draw(m_stars);
     m_window->draw(m_player.getShip());
 
-    SDL_Renderer* r = m_window->getRenderer().getHandle();
-    SDL_Point catchers[4];
-    SDL_Point moths[16];
-    SDL_Point bees[20];
-
-
-    for (size_t i = 0; i < m_alienGroup.m_catcherPos.size(); i++)
-        catchers[i] = pure::vecToPoint(
-           m_alienGroup.m_catcherPos[i] + m_alienGroup.position()
-        );
-
-    for (size_t i = 0; i < m_alienGroup.m_mothPos.size(); i++)
-        moths[i] = pure::vecToPoint(
-           m_alienGroup.m_mothPos[i] + m_alienGroup.position()
-        );
-
-    for (size_t i = 0; i < m_alienGroup.m_beePos.size(); i++)
-        bees[i] = pure::vecToPoint(
-           m_alienGroup.m_beePos[i] + m_alienGroup.position()
-        );
-
-    SDL_SetRenderDrawColor(r, 0, 255, 0, 255);
-    SDL_RenderDrawPoints(r, catchers, 4);
-
-    SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
-    SDL_RenderDrawPoints(r, moths, 16);
-
-    SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
-    SDL_RenderDrawPoints(r, bees, 20);
-
 }
 
 void PlayState::handleInput(const SDL_Event &event)
 {
     m_player.handleInput(event);
-
-    if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RIGHT)
-        m_alienGroup.m_rect.x += 5.f;
-    if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LEFT)
-        m_alienGroup.m_rect.x -= 5.f;
 
 }

@@ -27,7 +27,7 @@ Game::~Game()
     IMG_Quit();
 }
 
-bool Game::createWindow(const char *title, pure::uint32 width, pure::uint32 height)
+bool Game::createWindow(const char *title, uint32_t width, uint32_t height)
 {
     return m_window.create(title, width, height);
 }

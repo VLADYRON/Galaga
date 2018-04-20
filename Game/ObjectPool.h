@@ -29,7 +29,7 @@ private:
 
 public:
 
-    explicit ObjectPool(size_t size) : m_maxSize(size)
+    explicit ObjectPool(uint32_t size) : m_maxSize(size)
     {
         m_objects.resize(m_maxSize);
         // NOTE: Maybe this is getting invalidated somehow?
@@ -120,7 +120,7 @@ private:
     std::vector<Poolable<T>> m_objects;
     std::vector<T*> m_liveObjects;
     Poolable<T>* m_firstAvailable;
-    const size_t m_maxSize;
+    const uint32_t m_maxSize;
 };
 
 

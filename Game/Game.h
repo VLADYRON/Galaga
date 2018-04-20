@@ -21,7 +21,7 @@ public:
     Game();
     ~Game();
 
-    bool createWindow(const char* title, pure::uint32 width, pure::uint32 height);
+    bool createWindow(const char* title, uint32_t width, uint32_t height);
     void start();
 
 private:

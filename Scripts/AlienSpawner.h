@@ -26,7 +26,7 @@ public:
 private:
     pure::Clock m_diveTimer;
     std::vector<Alien*> m_divingAliens;
-    size_t m_diveIndx;
+    uint32_t m_diveIndx;
     std::function<void()> m_onDone;
 };
 

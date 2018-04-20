@@ -73,14 +73,14 @@ void Spline::setPoints(std::vector<Spline::Node> points)
     calcLengths();
 }
 
-void Spline::setPoint(size_t index, Spline::Node point)
+void Spline::setPoint(uint32_t  index, Spline::Node point)
 {
     assert(index < m_points.size() && index >= 0);
     m_points[index] = point;
     calcLengths();
 }
 
-float Spline::calcNodeLength(size_t node) const
+float Spline::calcNodeLength(uint32_t node) const
 {
     float length = 0.f;
     float temp = 0.f;
@@ -102,7 +102,7 @@ float Spline::calcNodeLength(size_t node) const
 
 float Spline::getOffset(float pos) const
 {
-    size_t i = 0;
+    int i = 0;
 
     while(pos > m_points[i].length)
     {
