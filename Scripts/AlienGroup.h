@@ -11,7 +11,7 @@
 #include <Pure2D/Util/Clock.h>
 #include <Pure2D/Renderables/Animator.h>
 #include <cstdint>
-#include <glm/vec2.hpp>
+#include <glm/glm.hpp>
 #include "../Util/Defaults.h"
 #include "../Util/Rect.h"
 #include "../Game/World.h"
@@ -78,8 +78,8 @@ private:
         for (size_t i = 0; i < positions.size(); i++)
         {
             positions[i] = glm::vec2(
-                    cellSize.x * offset.x,
-                    cellSize.y * offset.y
+               cellSize.x * offset.x,
+               cellSize.y * offset.y
             );
 
             if ((i + 1) == positions.size() / 2)
@@ -101,6 +101,24 @@ private:
         // default to offscreen pos
         static const glm::vec2 startPos = { -100, -100 };
         const uint32_t end = start + count;
+        const auto goToFormation = [](Alien& alien, float dt) {
+            glm::vec2 dir = alien.groupCell().position - alien.getPosition();
+
+            if (glm::length(dir) <= 3.f)
+            {
+                alien.setRotation(180.f); // face toward bottom of screen
+                alien.setPosition(alien.groupCell().position);
+                alien.endBehavior();
+                alien.setState(Alien::State::InFormation);
+                return;
+            }
+
+
+            const float rot = (std::atan2(dir.y, dir.x) * pure::RAD_TO_DEG) + 90.f;
+            alien.setRotation(rot);
+
+            alien.move(glm::normalize(dir) * alien.speed() * dt);
+        };
 
         for (uint32_t i = start; i < end; i++)
         {
@@ -108,6 +126,7 @@ private:
             defaults::set(*alien, type);
             alien->setGroupCell({ positions[i], i });
             alien->deactivate();
+            alien->setBehavior(goToFormation);
             m_aliens.push_back(alien);
 
             pure::Animator<Alien> animator(alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
@@ -122,7 +141,7 @@ private:
         const glm::vec2 newPos = positions[cellInfo.index] + glm::vec2(m_rect.x, m_rect.y);
         alien->setGroupCell({ newPos, cellInfo.index });
 
-        if (!alien->isDiving()) alien->setPosition(newPos);
+        if (alien->state() == Alien::State::InFormation) alien->setPosition(newPos);
     }
 
 };

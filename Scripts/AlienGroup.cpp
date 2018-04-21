@@ -37,12 +37,20 @@ void AlienGroup::update(float deltaTime)
     if (m_needsSpawn && m_spawnTimer.getElapsedTime() >= spawnDelay)
         spawnAliens();
 
+   if (m_moveTimer.getElapsedTime() >= moveTickDir)
+   {
+       move();
+       tickAnimations();
+   }
     m_spawner.update();
     for (auto alien : m_aliens)
     {
         if (!alien->isActive()) continue;
 
         alien->update(deltaTime);
+
+        if (alien->state() == Alien::State::DiveEnd)
+            alien->startBehavior();
 
         switch (alien->type())
         {
@@ -61,11 +69,6 @@ void AlienGroup::update(float deltaTime)
         }
     }
 
-   if (m_moveTimer.getElapsedTime() >= moveTickDir)
-   {
-       move();
-       tickAnimations();
-   }
 
 }
 
@@ -207,7 +210,7 @@ void AlienGroup::tickAnimations()
 
     for (size_t i = 0; i < m_animators.size(); i++)
     {
-        if (!m_aliens[i]->isDiving())
+        if (m_aliens[i]->state() == Alien::State::InFormation)
         {
             if (m_animators[i].animFrameIndx() == m_groupAnimFrame)
                 m_animators[i].step();
