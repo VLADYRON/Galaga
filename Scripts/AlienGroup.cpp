@@ -4,14 +4,34 @@
 
 #include <Pure2D/Util/Convert.h>
 #include <Pure2D/Util/Random.h>
+#include <glm/ext.hpp>
 #include "AlienGroup.h"
-
+#include "../Game/World.h"
+#include "../Entities/Alien.h"
 #include "../Splines/SplinePaths.h"
 #include "../Util/Rect.h"
+#include "../Util/SpriteMap.h"
+
+/*****************************
+ ****** PRIVATE STATICS ******
+ *****************************/
 
 constexpr float moveTickDir = 0.5f;
 constexpr float spawnDelay = 1.5f;
 const glm::vec2 AlienGroup::m_size = { 10, 5 };
+
+/**********************************
+ ****** FORWARD DECLARATIONS ******
+ **********************************/
+template<size_t size>
+void assignPositions(glm::vec2 cellSize, glm::vec2 offset, std::array<glm::vec2, size>& positions);
+template<size_t size>
+void updateGroupPos(std::array<glm::vec2, size>& positions, Alien* alien, glm::vec2 masterGroupPos);
+template void AlienGroup::createAliens<4>(std::array<glm::vec2, 4>& positions, SpriteType type, uint32_t start, uint32_t count);
+template void AlienGroup::createAliens<16>(std::array<glm::vec2, 16>& positions, SpriteType type, uint32_t start, uint32_t count);
+template void AlienGroup::createAliens<20>(std::array<glm::vec2, 20>& positions, SpriteType type, uint32_t start, uint32_t count);
+void goToFormation(Alien& alien, float dt);
+
 
 AlienGroup::AlienGroup(World &world, glm::vec2 cellSize, glm::vec2 boundary):
     m_world(world),
@@ -55,20 +75,19 @@ void AlienGroup::update(float deltaTime)
         switch (alien->type())
         {
             case SpriteType::CATCHER:
-                updateGroupPos(m_catcherPos, alien);
+                updateGroupPos(m_catcherPos, alien, position());
                 break;
             case SpriteType::MOTH:
-                updateGroupPos(m_mothPos, alien);
+                updateGroupPos(m_mothPos, alien, position());
                 break;
             case SpriteType::BEE:
-                updateGroupPos(m_beePos, alien);
+                updateGroupPos(m_beePos, alien, position());
                 break;
             default:
                 std::cout << "Invalid Alien SpriteType. Given: " << static_cast<int>(alien->type())
                     << " Expected 4, 5 or 6" << std::endl;
         }
     }
-
 
 }
 
@@ -220,3 +239,82 @@ void AlienGroup::tickAnimations()
     m_groupAnimFrame = static_cast<uint8_t>(!m_groupAnimFrame);
 }
 
+template<size_t size>
+void AlienGroup::createAliens(std::array<glm::vec2, size>& positions, SpriteType type, uint32_t start, uint32_t count)
+{
+    // default to offscreen pos
+    static const glm::vec2 startPos = { -100, -100 };
+    const uint32_t end = start + count;
+
+    for (uint32_t i = start; i < end; i++)
+    {
+        Alien* alien = &m_world.instantiate<Alien>(startPos);
+        defaults::set(*alien, type);
+        alien->setGroupCell({ positions[i], i });
+        alien->deactivate();
+        alien->setBehavior(goToFormation);
+        m_aliens.push_back(alien);
+
+        pure::Animator<Alien> animator(alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
+        m_animators.push_back(animator);
+    }
+}
+
+/******************************
+ ****** HELPER FUNCTIONS ******
+ ******************************/
+template<size_t size>
+void assignPositions(glm::vec2 cellSize, glm::vec2 offset, std::array<glm::vec2, size>& positions)
+{
+    const glm::vec2 original = offset;
+
+    for (size_t i = 0; i < positions.size(); i++)
+    {
+        positions[i] = glm::vec2(
+                cellSize.x * offset.x,
+                cellSize.y * offset.y
+        );
+
+        if ((i + 1) == positions.size() / 2)
+        {
+            offset.y++;
+            offset.x = original.x;
+        }
+        else
+        {
+            offset.x++;
+        }
+    }
+}
+
+template<size_t size>
+void updateGroupPos(std::array<glm::vec2, size>& positions, Alien* alien, glm::vec2 masterGroupPos)
+{
+    const GroupCell cellInfo = alien->groupCell();
+    const glm::vec2 newPos = positions[cellInfo.index] + masterGroupPos;
+    alien->setGroupCell({ newPos, cellInfo.index });
+
+    if (alien->state() == Alien::State::InFormation) alien->setPosition(newPos);
+}
+
+void goToFormation(Alien &alien, float dt)
+{
+    constexpr float minStopDist = 3.f;
+
+    glm::vec2 dir = alien.groupCell().position - alien.getPosition();
+
+    if (glm::length(dir) <= minStopDist)
+    {
+        alien.setRotation(180.f); // face toward bottom of screen
+        alien.setPosition(alien.groupCell().position);
+        alien.endBehavior();
+        alien.setState(Alien::State::InFormation);
+        return;
+    }
+
+
+    const float rot = (std::atan2(dir.y, dir.x) * pure::RAD_TO_DEG) + 90.f;
+    alien.setRotation(rot);
+
+    alien.move(glm::normalize(dir) * alien.speed() * dt);
+}
