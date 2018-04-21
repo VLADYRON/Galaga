@@ -9,12 +9,15 @@
 #include <vector>
 #include <array>
 #include <Pure2D/Util/Clock.h>
+#include <Pure2D/Renderables/Animator.h>
+#include <cstdint>
 #include <glm/vec2.hpp>
 #include "../Util/Defaults.h"
 #include "../Util/Rect.h"
 #include "../Game/World.h"
 #include "../Entities/Alien.h"
 #include "AlienSpawner.h"
+#include "../Util/SpriteMap.h"
 
 class Alien;
 class World;
@@ -54,6 +57,9 @@ private:
     AlienSpawner m_spawner;
 
     std::vector<Alien*> m_aliens;
+    std::vector<pure::Animator<Alien>> m_animators;
+    uint8_t m_groupAnimFrame;
+
     uint32_t m_spawnOrderIndx = 0;
 
 
@@ -61,6 +67,7 @@ private:
     void setupGroupPositions();
     void initAliens();
     void move();
+    void tickAnimations();
     bool hasPendingAliens() const;
 
     template<size_t size>
@@ -102,6 +109,9 @@ private:
             alien->setGroupCell({ positions[i], i });
             alien->deactivate();
             m_aliens.push_back(alien);
+
+            pure::Animator<Alien> animator(alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
+            m_animators.push_back(animator);
         }
     }
 

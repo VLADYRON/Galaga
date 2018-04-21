@@ -18,7 +18,8 @@ AlienGroup::AlienGroup(World &world, glm::vec2 cellSize, glm::vec2 boundary):
     m_rect({ 50, 50 }),
     m_moveDir(20.f),
     m_boundary(boundary),
-    m_cellSize(cellSize)
+    m_cellSize(cellSize),
+    m_groupAnimFrame(0)
 {
     setupGroupPositions();
     m_spawner.setOnDone([this]() {
@@ -60,7 +61,11 @@ void AlienGroup::update(float deltaTime)
         }
     }
 
-   if (m_moveTimer.getElapsedTime() >= moveTickDir) move();
+   if (m_moveTimer.getElapsedTime() >= moveTickDir)
+   {
+       move();
+       tickAnimations();
+   }
 
 }
 
@@ -195,5 +200,20 @@ void AlienGroup::initAliens()
 
     createAliens(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
     createAliens(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
+}
+
+void AlienGroup::tickAnimations()
+{
+
+    for (size_t i = 0; i < m_animators.size(); i++)
+    {
+        if (!m_aliens[i]->isDiving())
+        {
+            if (m_animators[i].animFrameIndx() == m_groupAnimFrame)
+                m_animators[i].step();
+
+        }
+    }
+    m_groupAnimFrame = static_cast<uint8_t>(!m_groupAnimFrame);
 }
 

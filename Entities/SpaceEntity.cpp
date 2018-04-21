@@ -3,6 +3,7 @@
 //
 
 #include "SpaceEntity.h"
+#include <optional>
 #include "../Util/Rect.h"
 
 SpaceEntity::~SpaceEntity() { }
@@ -29,5 +30,11 @@ Rect SpaceEntity::getBoundingRect() const
 glm::vec2 SpaceEntity::getCenterPos() const
 {
     return getTopLeft() + (getSize() / 2.f);
+}
+
+SDL_Rect SpaceEntity::textureRect() const
+{
+    if (m_sprite.textureRect == std::nullopt) return {};
+    return *m_sprite.textureRect;
 }
 
