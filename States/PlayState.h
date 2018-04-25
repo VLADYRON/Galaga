@@ -11,6 +11,7 @@
 #include "../Player/PlayerController.h"
 #include "../Background/StarBackground.h"
 #include "../Scripts/AlienGroup.h"
+#include "../Scripts/CollisionSystem.h"
 
 
 class PlayState : public pure::State
@@ -21,10 +22,11 @@ public:
 private:
 
     pure::Window* m_window;
-    AlienGroup m_alienGroup;
     World m_world;
+    AlienGroup m_alienGroup;
     PlayerController m_player;
     StarBackground m_stars;
+    CollisionSystem m_collision;
 
     void update(float deltaTime) final;
     void draw(const pure::Window& window) final;

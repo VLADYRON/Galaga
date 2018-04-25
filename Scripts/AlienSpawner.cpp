@@ -20,7 +20,6 @@ void AlienSpawner::update()
         m_diveTimer.restart();
         Alien* alien = m_divingAliens[m_diveIndx];
         alien->startDivePath();
-        alien->activate();
         m_diveIndx++;
 
         if (isDone())

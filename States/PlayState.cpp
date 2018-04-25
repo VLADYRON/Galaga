@@ -11,10 +11,13 @@
 
 PlayState::PlayState(pure::StateManager& manager, pure::Window* window):
         pure::State(manager),
+        m_window(window),
         m_alienGroup(m_world, { 50, 50 }, m_window->getSize()),
         m_player(m_world),
-        m_window(window)
-{ }
+        m_collision(m_world)
+{
+    m_world.setPlayer(m_player);
+}
 
 void PlayState::onCreate()
 {
@@ -59,6 +62,7 @@ void PlayState::update(float deltaTime)
 {
 
     m_stars.update(deltaTime);
+    m_collision.update();
 
     const EArr<Missile*>& missiles = m_world.getEntities<Missile>();
 

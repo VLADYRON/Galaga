@@ -6,14 +6,14 @@
 #include <optional>
 #include "../Util/Rect.h"
 
-SpaceEntity::~SpaceEntity() { }
+SpaceEntity::SpaceEntity()
+{ }
 
 void SpaceEntity::draw(SDL_Renderer *renderer) const
 {
     assert(m_sprite.textureRect != std::nullopt);
 
     m_sprite.draw(renderer, getTransform());
-//    auto rect = static_cast<SDL_Rect>(getBoundingRect());
 }
 
 void SpaceEntity::setTextureRect(const SDL_Rect &rect) { m_sprite.textureRect = rect; }
@@ -37,4 +37,6 @@ SDL_Rect SpaceEntity::textureRect() const
     if (m_sprite.textureRect == std::nullopt) return {};
     return *m_sprite.textureRect;
 }
+
+
 

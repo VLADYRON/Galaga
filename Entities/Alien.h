@@ -44,6 +44,8 @@ public:
 
     float speed() const;
 
+    Rect colliderRect() const;
+
     void setDivePath(std::vector<Spline::Node> path, bool begin = true);
     void startDivePath();
     void update(float deltaTime) final;

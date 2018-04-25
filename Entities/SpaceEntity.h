@@ -15,7 +15,7 @@ struct Rect;
 class SpaceEntity : public Entity, public pure::Renderable
 {
 public:
-    virtual ~SpaceEntity() = 0;
+    SpaceEntity();
     SDL_Rect textureRect() const;
     void setTextureRect(const SDL_Rect& rect);
     void setTexture(pure::Texture* texture);
@@ -25,7 +25,6 @@ public:
 
     Rect getBoundingRect() const;
     glm::vec2 getCenterPos() const;
-
 
 protected:
     Sprite m_sprite;

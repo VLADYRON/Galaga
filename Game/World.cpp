@@ -7,3 +7,8 @@
 
 
 using namespace pure;
+
+PlayerController *World::getPlayer() { return m_player; }
+
+void World::setPlayer(PlayerController &player) { m_player = &player; }
+

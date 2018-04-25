@@ -33,3 +33,21 @@ Rect::operator SDL_Rect() const
 
 float Rect::right() const { return x + w; }
 float Rect::bottom() const { return y + h; }
+
+bool Rect::doesCollide(const Rect &other) const
+{
+    return (
+        (x < other.right()) && (right() > other.x) && (y < other.bottom()) && (bottom() > other.y)
+    );
+}
+
+bool Rect::doesCollide(const SDL_Rect &other) const
+{
+    Rect r = {
+        static_cast<float>(other.x),
+        static_cast<float>(other.y),
+        static_cast<float>(other.w),
+        static_cast<float>(other.h)
+    };
+    return doesCollide(r);
+}

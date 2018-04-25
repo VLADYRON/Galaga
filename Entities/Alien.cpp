@@ -7,6 +7,7 @@
 #include <glm/ext.hpp>
 #include <Pure2D/Util/Constants.h>
 #include "Alien.h"
+#include "../Util/Rect.h"
 
 constexpr float minStopDist = 3.f;
 
@@ -69,4 +70,30 @@ void Alien::setState(Alien::State state)
         m_state = state;
 }
 
+Rect Alien::colliderRect() const
+{
+    Rect collider{};
+    glm::vec2 pos = getPosition();
+    // TODO: Look into alternatives to switch statement... this is pretty ugg
+    switch (type())
+    {
+        case SpriteType::BEE:
+        case SpriteType::MOTH:
+            collider.x = pos.x - 15;
+            collider.y = pos.y - 15;
+            collider.w = 35;
+            collider.h = 33;
+            break;
+        case SpriteType::CATCHER:
+            collider.x = pos.x - 20;
+            collider.y = pos.y - 20;
+            collider.w = 45;
+            collider.h = 45;
+            break;
+        default:
+            std::cout << "Alien has incorrect SpriteType, given: " << static_cast<int>(type()) << std::endl;
+    }
+
+    return collider;
+}
 

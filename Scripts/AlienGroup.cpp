@@ -251,7 +251,6 @@ void AlienGroup::createAliens(std::array<glm::vec2, size>& positions, SpriteType
         Alien* alien = &m_world.instantiate<Alien>(startPos);
         defaults::set(*alien, type);
         alien->setGroupCell({ positions[i], i });
-        alien->deactivate();
         alien->setBehavior(goToFormation);
         m_aliens.push_back(alien);
 
@@ -305,7 +304,7 @@ void goToFormation(Alien &alien, float dt)
 
     if (glm::length(dir) <= minStopDist)
     {
-        alien.setRotation(180.f); // face toward bottom of screen
+        alien.setRotation(0); // face toward top of screen
         alien.setPosition(alien.groupCell().position);
         alien.endBehavior();
         alien.setState(Alien::State::InFormation);

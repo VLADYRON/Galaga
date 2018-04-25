@@ -6,29 +6,22 @@
 #define GALAGA_MISSILE_H
 
 #include <Pure2D/Renderables/Renderable.h>
-#include "Entity.h"
 #include "../Components/Sprite.h"
+#include "SpaceEntity.h"
 
 namespace pure
 {
     class Texture;
 }
 
-class Missile : public Entity, public pure::Renderable
+class Missile : public SpaceEntity
 {
 public:
     explicit Missile();
-    void setTextureRect(const SDL_Rect& rect);
-    void setTexture(pure::Texture* texture);
-
-    void setSize(const glm::vec2 &size);
-    glm::vec2 getSize() const;
-
     void update(float deltaTime) final;
+    Rect colliderRect() const;
 
 private:
-    void draw(SDL_Renderer* renderer) const final;
-    Sprite m_sprite;
 };
 
 

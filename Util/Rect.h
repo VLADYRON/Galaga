@@ -15,8 +15,9 @@ struct Rect
     explicit operator SDL_Rect() const;
 
     bool isOutside(const glm::vec2& point) const;
-
     bool isInside(const glm::vec2& point) const;
+    bool doesCollide(const Rect& other) const;
+    bool doesCollide(const SDL_Rect& other) const;
 
     float right() const;
     float bottom() const;

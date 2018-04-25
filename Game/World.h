@@ -21,11 +21,11 @@ namespace pure
 
 
 class Entity;
+class PlayerController;
 
 class World : private pure::NonCopyable
 {
 public:
-
 
     template<typename T>
     const EArr<T*> &getEntities()
@@ -52,12 +52,16 @@ public:
         m_entityManager.destroy<T>(&entity);
     }
 
+    void setPlayer(PlayerController& player);
+    PlayerController* getPlayer();
+
 private:
 
     EntityManager< 50,
         Missile,
         Alien
         > m_entityManager;
+    PlayerController* m_player;
 
 };
 

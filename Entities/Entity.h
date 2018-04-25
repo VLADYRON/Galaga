@@ -57,7 +57,7 @@ public:
 
 private:
     Transform m_transform;
-    bool m_isActive;
+    bool m_isActive = false;
 };
 
 
