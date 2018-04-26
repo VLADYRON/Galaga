@@ -21,6 +21,8 @@ public:
 
     void fireMissile();
 
+    Rect collilderRect() const;
+
 private:
     World* m_world;
 };

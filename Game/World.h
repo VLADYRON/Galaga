@@ -13,6 +13,7 @@
 #include "../typedefs.h"
 #include "../Entities/Missile.h"
 #include "../Entities/Alien.h"
+#include "../Player/PlayerController.h"
 
 namespace pure
 {
@@ -26,6 +27,8 @@ class PlayerController;
 class World : private pure::NonCopyable
 {
 public:
+
+    World();
 
     template<typename T>
     const EArr<T*> &getEntities()
@@ -52,16 +55,15 @@ public:
         m_entityManager.destroy<T>(&entity);
     }
 
-    void setPlayer(PlayerController& player);
     PlayerController* getPlayer();
 
 private:
 
-    EntityManager< 50,
+    PlayerController m_player;
+    EntityManager<
         Missile,
         Alien
         > m_entityManager;
-    PlayerController* m_player;
 
 };
 

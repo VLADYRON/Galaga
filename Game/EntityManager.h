@@ -15,12 +15,12 @@
 template<typename T>
 using EArr = std::vector<T>;
 
-template<uint32_t poolsize, typename ...Args>
+template<typename ...Args>
 class EntityManager
 {
 public:
     EntityManager():
-        m_entities(std::make_tuple(ObjectPool<Args>(poolsize)...))
+        m_entities(std::make_tuple(ObjectPool<Args>()...))
     {
     }
 
@@ -31,6 +31,13 @@ public:
         ObjectPool<T>& pool = std::get<ObjectPool<T>>(m_entities);
         return *pool.create();
     };
+
+    template<typename T>
+    void resize(uint32_t newSize)
+    {
+        ObjectPool<T>& pool = std::get<ObjectPool<T>>(m_entities);
+        pool.resize(newSize);
+    }
 
     /**
      * Requests for an entity to be deleted

@@ -43,17 +43,17 @@ void CollisionSystem::resolveMissileCollision()
     auto aliens = m_world.getEntities<Alien>();
     auto missiles = m_world.getEntities<Missile>();
 
-    Rect playerRect = player.getBoundingRect();
+    Rect playerRect = player.collilderRect();
 
 
     for (auto m : missiles)
     {
-//        if (m->getBoundingRect().doesCollide(playerRect))
-//        {
-//            player.deactivate();
-//            m_world.destroy<Missile>(*m);
-//            continue;
-//        }
+        if (m->colliderRect().doesCollide(playerRect))
+        {
+            player.deactivate();
+            m_world.destroy<Missile>(*m);
+            continue;
+        }
 
         for (auto a : aliens)
         {

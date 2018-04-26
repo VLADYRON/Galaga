@@ -29,24 +29,18 @@ private:
 
 public:
 
-    explicit ObjectPool(uint32_t size) : m_maxSize(size)
+    ObjectPool() = default;
+
+    explicit ObjectPool(uint32_t size)
     {
-        m_objects.resize(m_maxSize);
-        // NOTE: Maybe this is getting invalidated somehow?
-        m_firstAvailable = &m_objects[0];
+        m_objects.resize(size);
 
-        for (size_t i = 0; i < m_objects.size() - 1; i++)
-        {
-            m_objects[i].next = &m_objects[i + 1];
-        }
+        assignDefaultNextPtrs();
 
-        m_objects.back().next = nullptr;
-
-        m_liveObjects.reserve(m_maxSize);
+        m_liveObjects.reserve(size);
     }
 
     ObjectPool(ObjectPool<T> &&other) noexcept:
-        m_maxSize(other.m_maxSize),
         m_objects(std::move(other.m_objects)),
         m_liveObjects(std::move(other.m_liveObjects))
     {
@@ -87,13 +81,35 @@ public:
 
     void destroy(int objectIndx)
     {
-        T* obj = m_liveObjects[objectIndx];
+        auto* obj = static_cast<Poolable<T>*>(m_liveObjects[objectIndx]);
 
         obj->deactivate();
         obj->next = m_firstAvailable;
         m_firstAvailable = obj;
 
         m_liveObjects.erase(m_liveObjects.begin() + objectIndx);
+    }
+
+    /**
+     * Resize pool to given size.
+     * Destroys and resets all objects in pool before resizing.
+     * Does nothing if given newSize is same as current size.
+     *
+     * @param size new pool size
+     */
+    void resize(uint32_t newSize)
+    {
+        if (newSize == m_objects.size()) return;
+        if (m_objects.empty())
+        {
+            m_objects.resize(newSize);
+            assignDefaultNextPtrs();
+            return;
+        }
+
+        reset();
+        m_objects.resize(newSize);
+        assignDefaultNextPtrs();
     }
 
     /**
@@ -112,6 +128,7 @@ public:
         auto objSize = static_cast<int>(m_liveObjects.size());
         for (int i = objSize - 1; i >= 0; i--)
             destroy(i);
+        m_liveObjects.clear();
     }
 
 
@@ -119,8 +136,20 @@ private:
 
     std::vector<Poolable<T>> m_objects;
     std::vector<T*> m_liveObjects;
-    Poolable<T>* m_firstAvailable;
-    const uint32_t m_maxSize;
+    Poolable<T>* m_firstAvailable = nullptr;
+
+    void assignDefaultNextPtrs()
+    {
+        m_firstAvailable = &m_objects[0];
+
+        for (size_t i = 0; i < m_objects.size() - 1; i++)
+        {
+            m_objects[i].next = &m_objects[i + 1];
+        }
+
+        m_objects.back().next = nullptr;
+
+    }
 };
 
 

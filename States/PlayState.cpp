@@ -8,16 +8,15 @@
 #include "../Util/Defaults.h"
 #include "../Util/Rect.h"
 #include "../Splines/SplinePaths.h"
+#include "../Player/PlayerController.h"
 
 PlayState::PlayState(pure::StateManager& manager, pure::Window* window):
         pure::State(manager),
         m_window(window),
         m_alienGroup(m_world, { 50, 50 }, m_window->getSize()),
-        m_player(m_world),
+        m_player(*m_world.getPlayer()),
         m_collision(m_world)
-{
-    m_world.setPlayer(m_player);
-}
+{ }
 
 void PlayState::onCreate()
 {
