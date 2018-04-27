@@ -8,9 +8,9 @@
 
 enum class GameState
 {
-    Menu,
-    Playing,
-    Paused
+    MENU,
+    PLAYING,
+    PAUSED
 };
 
 

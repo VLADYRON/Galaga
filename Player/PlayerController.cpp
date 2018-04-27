@@ -21,6 +21,12 @@ void PlayerController::handleInput(const SDL_Event &event)
     {
         if (event.key.state == SDL_RELEASED && event.key.keysym.sym == SDLK_SPACE)
             m_player.fireMissile();
+
+        if (event.key.state == SDL_RELEASED && event.key.keysym.sym == SDLK_z)
+        {
+            SDL_Rect r = m_player.textureRect();
+            std::cout << "(" << r.x << ", " << r.y << ")" << std::endl;
+        }
     }
 }
 

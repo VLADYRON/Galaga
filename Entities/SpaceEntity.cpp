@@ -6,8 +6,6 @@
 #include <optional>
 #include "../Util/Rect.h"
 
-SpaceEntity::SpaceEntity()
-{ }
 
 void SpaceEntity::draw(SDL_Renderer *renderer) const
 {
@@ -37,6 +35,10 @@ SDL_Rect SpaceEntity::textureRect() const
     if (m_sprite.textureRect == std::nullopt) return {};
     return *m_sprite.textureRect;
 }
+
+void SpaceEntity::activate() { m_isActive = true; }
+void SpaceEntity::deactivate() { m_isActive = false; }
+bool SpaceEntity::isActive() const { return m_isActive; }
 
 
 

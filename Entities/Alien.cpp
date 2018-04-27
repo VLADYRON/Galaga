@@ -17,7 +17,7 @@ Alien::Alien():
 {
     setSize({ 50, 50 });
     setOrigin(getSize() / 2.f);
-    m_divePath.setOnDone([this]() { m_state = Alien::State::DiveEnd; });
+    m_divePath.setOnDone([this]() { m_state = Alien::State::DIVE_END; });
 }
 
 void Alien::update(float deltaTime)
@@ -39,13 +39,13 @@ void Alien::update(float deltaTime)
 void Alien::setDivePath(std::vector<Spline::Node> path, bool begin)
 {
     m_divePath.setPath(std::move(path), begin);
-    m_state = Alien::State::Diving;
+    m_state = Alien::State::DIVING;
 }
 
 void Alien::startDivePath()
 {
     m_divePath.startPath();
-    m_state = Alien::State::Diving;
+    m_state = Alien::State::DIVING;
 }
 
 //bool Alien::isDiving() const { return !m_divePath.isDone(); }
@@ -66,7 +66,7 @@ Alien::State Alien::state() const { return m_state; }
 void Alien::setState(Alien::State state)
 {
     // we don't want state changed from outside if we are currently diving
-    if (m_state != Alien::State::Diving)
+    if (m_state != Alien::State::DIVING)
         m_state = state;
 }
 

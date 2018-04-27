@@ -12,13 +12,11 @@
 struct SDL_Renderer;
 class World;
 
-class Entity : public LifeCycle
+class Entity
 {
 public:
     virtual ~Entity() = 0;
 
-
-    bool isActive() const;
     const Transform& getTransform() const;
     void setTransform(const Transform& transform);
 
@@ -52,12 +50,10 @@ public:
     void move(const glm::vec2& position);
 
     virtual void update(float deltaTime) { }
-    void activate() override;
-    void deactivate() override;
 
 private:
     Transform m_transform;
-    bool m_isActive = false;
+
 };
 
 

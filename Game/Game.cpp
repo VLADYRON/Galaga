@@ -36,12 +36,16 @@ void Game::start()
 {
     {
         TextureManager& textureManager = TextureManager::instance();
-        pure::Texture* spritesheet =  m_window.getRenderer().getTexture(paths::GalagaSpriteSheet);
-        textureManager.addTexture(paths::GalagaSpriteSheet, spritesheet);
+
+        pure::Texture* spritesheet =  m_window.getRenderer().getTexture(paths::GALAGA_SPRITE_SHEET);
+        pure::Texture* spritesheetSpread = m_window.getRenderer().getTexture(paths::GALAGA_SPRITE_SHEET_SPREAD);
+        textureManager.addTexture(paths::GALAGA_SPRITE_SHEET, spritesheet);
+
+        textureManager.addTexture(paths::GALAGA_SPRITE_SHEET_SPREAD, spritesheetSpread);
     }
 
     {
-        auto playState = static_cast<int>(GameState::Playing);
+        auto playState = static_cast<int>(GameState::PLAYING);
         m_stateManager.registerState<PlayState>(playState, &m_window);
         m_stateManager.pushState(playState);
     }

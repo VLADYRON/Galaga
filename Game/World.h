@@ -14,6 +14,7 @@
 #include "../Entities/Missile.h"
 #include "../Entities/Alien.h"
 #include "../Player/PlayerController.h"
+#include "../Entities/Explosion.h"
 
 namespace pure
 {
@@ -62,7 +63,8 @@ private:
     PlayerController m_player;
     EntityManager<
         Missile,
-        Alien
+        Alien,
+        Explosion
         > m_entityManager;
 
 };

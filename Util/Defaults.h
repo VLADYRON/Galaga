@@ -11,21 +11,24 @@ enum class SpriteType
     SHIP_RED,
     MISSLE_ENEMY,
     MISSLE_PLAYER,
-    // TODO: Add more sprite types?
     BEE,
     MOTH,
-    CATCHER
+    CATCHER,
+    EXPLOSION_ALIEN,
+    EXPLOSION_FIGHTER
 };
 
 class Fighter;
 class Missile;
 class Alien;
+class Explosion;
 
 namespace defaults
 {
     Missile& set(Missile& missile, SpriteType type);
     Fighter& set(Fighter& spaceship, SpriteType type);
     Alien& set(Alien& alien, SpriteType type);
+    Explosion& set(Explosion& explosion, SpriteType type);
 }
 
 #endif //GALAGA_DEFAULTS_H

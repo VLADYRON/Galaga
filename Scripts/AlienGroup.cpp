@@ -69,7 +69,7 @@ void AlienGroup::update(float deltaTime)
 
         alien->update(deltaTime);
 
-        if (alien->state() == Alien::State::DiveEnd)
+        if (alien->state() == Alien::State::DIVE_END)
             alien->startBehavior();
 
         switch (alien->type())
@@ -229,7 +229,7 @@ void AlienGroup::tickAnimations()
 
     for (size_t i = 0; i < m_animators.size(); i++)
     {
-        if (m_aliens[i]->state() == Alien::State::InFormation)
+        if (m_aliens[i]->state() == Alien::State::IN_FORMATION)
         {
             if (m_animators[i].animFrameIndx() == m_groupAnimFrame)
                 m_animators[i].step();
@@ -254,7 +254,7 @@ void AlienGroup::createAliens(std::array<glm::vec2, size>& positions, SpriteType
         alien->setBehavior(goToFormation);
         m_aliens.push_back(alien);
 
-        pure::Animator<Alien> animator(alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
+        pure::Animator<Alien> animator(*alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
         m_animators.push_back(animator);
     }
 }
@@ -293,7 +293,7 @@ void updateGroupPos(std::array<glm::vec2, size>& positions, Alien* alien, glm::v
     const glm::vec2 newPos = positions[cellInfo.index] + masterGroupPos;
     alien->setGroupCell({ newPos, cellInfo.index });
 
-    if (alien->state() == Alien::State::InFormation) alien->setPosition(newPos);
+    if (alien->state() == Alien::State::IN_FORMATION) alien->setPosition(newPos);
 }
 
 void goToFormation(Alien &alien, float dt)
@@ -307,7 +307,7 @@ void goToFormation(Alien &alien, float dt)
         alien.setRotation(0); // face toward top of screen
         alien.setPosition(alien.groupCell().position);
         alien.endBehavior();
-        alien.setState(Alien::State::InFormation);
+        alien.setState(Alien::State::IN_FORMATION);
         return;
     }
 

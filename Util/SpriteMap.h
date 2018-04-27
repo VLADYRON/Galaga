@@ -9,7 +9,8 @@
 
 namespace spritemap
 {
-    constexpr int SIZE = 18;
+    constexpr uint32_t SIZE = 18;
+    constexpr uint32_t FIGHTER_EXPLOSION_SIZE = 34;
 
     constexpr SDL_Rect SHIP_WHITE =  { SIZE * 6, SIZE * 0, SIZE, SIZE };
     constexpr SDL_Rect SHIP_RED = { SIZE * 6, SIZE * 1, SIZE, SIZE };
@@ -26,8 +27,18 @@ namespace spritemap
     constexpr SDL_Rect BEE_OPEN = { SIZE * 6, SIZE * 5, SIZE, SIZE };
     constexpr SDL_Rect BEE_CLOSED = { SIZE * 7, SIZE * 5, SIZE, SIZE };
 
-    constexpr SDL_Rect PLAYER_EXPLOSION_BEGIN = { 0, SIZE * 6, 34, 34 };
-    constexpr SDL_Rect PLAYER_EXPLOSION_END = { 34 * 3, SIZE * 6, 34, 34 };
+    constexpr SDL_Rect FIGHTER_EXPLOSION_BEGIN = {
+            0,
+            SIZE * 6,
+            FIGHTER_EXPLOSION_SIZE,
+            FIGHTER_EXPLOSION_SIZE
+    };
+    constexpr SDL_Rect FIGHTER_EXPLOSION_END = {
+            FIGHTER_EXPLOSION_SIZE * 3,
+            SIZE * 6,
+            FIGHTER_EXPLOSION_SIZE,
+            FIGHTER_EXPLOSION_SIZE
+    };
 
     constexpr SDL_Rect PLAYER_MISSLE = { 0, SIZE * 8, SIZE, SIZE };
     constexpr SDL_Rect ENEMY_MISSLE = { SIZE * 5, SIZE * 8, SIZE, SIZE };

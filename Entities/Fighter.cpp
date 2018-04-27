@@ -44,4 +44,3 @@ Rect Fighter::collilderRect() const
 
 
 
-

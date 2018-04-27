@@ -18,10 +18,10 @@ class Alien : public SpaceEntity
 public:
     enum class State
     {
-        Idle,
-        Diving,
-        DiveEnd,
-        InFormation
+        IDLE,
+        DIVING,
+        DIVE_END,
+        IN_FORMATION
     };
 
     using AlienBehavior = std::function<void(Alien&, float)>;

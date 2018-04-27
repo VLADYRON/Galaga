@@ -63,6 +63,16 @@ void PlayState::update(float deltaTime)
     m_stars.update(deltaTime);
     m_collision.update();
 
+    {
+        using namespace pure::keyboard;
+        SDL_Rect r = m_player.getShip().textureRect();
+        if (isKeyPressed(Key::UP)) r.y -= 5;
+        if (isKeyPressed(Key::LEFT)) r.x -= 5;
+        if (isKeyPressed(Key::RIGHT)) r.x += 5;
+        if (isKeyPressed(Key::DOWN)) r.y += 5;
+        m_player.getShip().setTextureRect(r);
+    }
+
     const EArr<Missile*>& missiles = m_world.getEntities<Missile>();
 
     m_player.update(deltaTime);
