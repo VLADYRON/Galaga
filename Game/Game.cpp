@@ -38,10 +38,10 @@ void Game::start()
         TextureManager& textureManager = TextureManager::instance();
 
         pure::Texture* spritesheet =  m_window.getRenderer().getTexture(paths::GALAGA_SPRITE_SHEET);
-        pure::Texture* spritesheetSpread = m_window.getRenderer().getTexture(paths::GALAGA_SPRITE_SHEET_SPREAD);
+        pure::Texture* spritesheetSpread = m_window.getRenderer().getTexture(paths::ALIEN_EXPLOSION);
         textureManager.addTexture(paths::GALAGA_SPRITE_SHEET, spritesheet);
 
-        textureManager.addTexture(paths::GALAGA_SPRITE_SHEET_SPREAD, spritesheetSpread);
+        textureManager.addTexture(paths::ALIEN_EXPLOSION, spritesheetSpread);
     }
 
     {

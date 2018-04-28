@@ -18,7 +18,7 @@ Fighter::Fighter()
 
 void Fighter::fireMissile()
 {
-    glm::vec2 shipPos = getPosition();
+    glm::vec2 shipPos = position();
     glm::vec2 firePos = { shipPos.x, shipPos.y - (getSize().y / 2.f) - 13 };
     auto& m = m_world->instantiate<Missile>(firePos);
     defaults::set(m, SpriteType::MISSLE_PLAYER);

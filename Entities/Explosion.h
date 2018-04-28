@@ -15,8 +15,8 @@ public:
 
     Explosion();
 
-    void activate() final;
-    void deactivate() final;
+    bool isDone() const;
+    void update(float deltaTime) final;
 
     void setAnim(uint32_t numAnims, SDL_Rect start, glm::vec2 offset);
 

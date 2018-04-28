@@ -26,10 +26,10 @@ public:
      * @return top left coordinate of entity.
      */
     glm::vec2 getTopLeft() const;
-    glm::vec2 getPosition() const;
+    glm::vec2 position() const;
     void setPosition(const glm::vec2& position);
 
-    const glm::vec2& getVelocity() const;
+    const glm::vec2& velocity() const;
     void setVelocity(const glm::vec2& velocity);
 
     float getRotation() const;
@@ -39,7 +39,7 @@ public:
      * Get origin relative to top left corner
      * @return local relative origin
      */
-    const glm::vec2& getOrigin() const;
+    const glm::vec2& origin() const;
 
     /**
      * Set origin relative to top left corner

@@ -73,7 +73,7 @@ void Alien::setState(Alien::State state)
 Rect Alien::colliderRect() const
 {
     Rect collider{};
-    glm::vec2 pos = getPosition();
+    glm::vec2 pos = position();
     // TODO: Look into alternatives to switch statement... this is pretty ugg
     switch (type())
     {

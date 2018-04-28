@@ -18,14 +18,14 @@ Missile::Missile()
 
 void Missile::update(float deltaTime)
 {
-    move({ 0.f, -std::round(getVelocity().y * deltaTime) });
+    move({ 0.f, -std::round(velocity().y * deltaTime) });
 }
 
 Rect Missile::colliderRect() const
 {
     return {
-        getPosition().x - 3,
-        getPosition().y - 15,
+            position().x - 3,
+        position().y - 15,
         10,
         28
     };

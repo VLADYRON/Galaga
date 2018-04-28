@@ -4,6 +4,7 @@
 
 #include "CollisionSystem.h"
 #include "../Game/World.h"
+#include "../Entities/Alien.h"
 #include "../Player/PlayerController.h"
 #include "../Util/Rect.h"
 
@@ -23,8 +24,8 @@ void CollisionSystem::update()
 void CollisionSystem::resolvePlayerCollision()
 {
 //    Fighter& player = m_world.getPlayer()->getShip();
-//    auto aliens = m_world.getEntities<Alien>();
-//    auto missiles = m_world.getEntities<Missile>();
+//    auto& aliens = m_world.getEntities<Alien>();
+//    auto& missiles = m_world.getEntities<Missile>();
 //
 //    Rect playerRect = player.getBoundingRect();
 //
@@ -40,11 +41,11 @@ void CollisionSystem::resolvePlayerCollision()
 void CollisionSystem::resolveMissileCollision()
 {
     Fighter& player = m_world.getPlayer()->getShip();
-    auto aliens = m_world.getEntities<Alien>();
-    auto missiles = m_world.getEntities<Missile>();
+    auto& aliens = m_world.getEntities<Alien>();
+    auto& missiles = m_world.getEntities<Missile>();
+
 
     Rect playerRect = player.collilderRect();
-
 
     for (auto m : missiles)
     {
@@ -59,6 +60,7 @@ void CollisionSystem::resolveMissileCollision()
         {
             if (m->colliderRect().doesCollide(a->colliderRect()))
             {
+                defaults::set(m_world.instantiate<Explosion>(a->position()), SpriteType::EXPLOSION_ALIEN);
                 m_world.destroy<Alien>(*a);
                 m_world.destroy<Missile>(*m);
             }
@@ -69,6 +71,6 @@ void CollisionSystem::resolveMissileCollision()
 void CollisionSystem::resolveAlienCollision()
 {
     Fighter& player = m_world.getPlayer()->getShip();
-    auto aliens = m_world.getEntities<Alien>();
-    auto missiles = m_world.getEntities<Missile>();
+    auto& aliens = m_world.getEntities<Alien>();
+    auto& missiles = m_world.getEntities<Missile>();
 }

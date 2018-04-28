@@ -300,7 +300,7 @@ void goToFormation(Alien &alien, float dt)
 {
     constexpr float minStopDist = 3.f;
 
-    glm::vec2 dir = alien.groupCell().position - alien.getPosition();
+    glm::vec2 dir = alien.groupCell().position - alien.position();
 
     if (glm::length(dir) <= minStopDist)
     {

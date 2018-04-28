@@ -28,17 +28,15 @@ Missile& defaults::set(Missile& missile, SpriteType type)
 
 Fighter& defaults::set(Fighter& spaceship, SpriteType type)
 {
-    pure::Texture* spritesheet = TextureManager::instance().getTexture(paths::GALAGA_SPRITE_SHEET_SPREAD);
+    pure::Texture* spritesheet = TextureManager::instance().getTexture(paths::GALAGA_SPRITE_SHEET);
     assert(spritesheet != nullptr);
 
     spaceship.setTexture(spritesheet);
     if (type == SpriteType::SHIP_WHITE)
         // FIXME: THIS TEXTURE MAPPING IS AIDS FIX DIS
-        spaceship.setTextureRect({ 189, 225, 48, 48 });
+        spaceship.setTextureRect(spritemap::SHIP_WHITE);
     else if (type == SpriteType::SHIP_RED)
         spaceship.setTextureRect(spritemap::SHIP_RED);
-
-    spaceship.setSize({ 160, 160 });
 
     return spaceship;
 }
@@ -75,25 +73,21 @@ Alien& defaults::set(Alien& alien, SpriteType type)
 Explosion &defaults::set(Explosion &explosion, SpriteType type)
 {
     pure::Texture* spritesheet = nullptr;
-    SDL_Rect textureRect{};
 
     if (type == SpriteType::EXPLOSION_ALIEN)
     {
-        spritesheet = TextureManager::instance().getTexture(paths::GALAGA_SPRITE_SHEET_SPREAD);
-        // FIXME: Implement get proper coords for this textureRect
-        textureRect = {};
+        spritesheet = TextureManager::instance().getTexture(paths::ALIEN_EXPLOSION);
+        explosion.setAnim(4, spritemap::ALIEN_EXPLOSION, { spritemap::ALIEN_EXPLOSION_SIZE, 0 });
 
     }
     else if (type == SpriteType::EXPLOSION_FIGHTER)
     {
         spritesheet = TextureManager::instance().getTexture(paths::GALAGA_SPRITE_SHEET);
-        textureRect = spritemap::FIGHTER_EXPLOSION_BEGIN;
-        explosion.setAnim(4, explosion.textureRect(), { spritemap::FIGHTER_EXPLOSION_SIZE, 0 });
+        explosion.setAnim(4, spritemap::FIGHTER_EXPLOSION_BEGIN, { spritemap::FIGHTER_EXPLOSION_SIZE, 0 });
     }
 
     assert(spritesheet != nullptr);
     explosion.setTexture(spritesheet);
-    explosion.setTextureRect(textureRect);
 
     return explosion;
 }
