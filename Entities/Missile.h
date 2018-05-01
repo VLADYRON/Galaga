@@ -8,6 +8,7 @@
 #include <Pure2D/Renderables/Renderable.h>
 #include "../Components/Sprite.h"
 #include "SpaceEntity.h"
+#include "SpriteType.h"
 
 namespace pure
 {
@@ -21,7 +22,11 @@ public:
     void update(float deltaTime) final;
     Rect colliderRect() const;
 
+    void activate() override;
+
 private:
+    SpriteType m_type;
+
 };
 
 

@@ -5,6 +5,9 @@
 #include "SpaceEntity.h"
 #include <optional>
 #include "../Util/Rect.h"
+#include "../Util/TextureManager.h"
+#include "../Game/AssetPaths.h"
+#include "../Util/SpriteMap.h"
 
 
 void SpaceEntity::draw(SDL_Renderer *renderer) const
@@ -40,5 +43,9 @@ void SpaceEntity::activate() { m_isActive = true; }
 void SpaceEntity::deactivate() { m_isActive = false; }
 bool SpaceEntity::isActive() const { return m_isActive; }
 
+void SpaceEntity::onCreate() { }
+void SpaceEntity::onDestroy() {  }
 
+SpriteType SpaceEntity::type() const { return m_type; }\
+void SpaceEntity::setType(SpriteType type) { m_type = type; }
 

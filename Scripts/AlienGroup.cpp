@@ -101,6 +101,9 @@ void AlienGroup::spawnAliens()
         Alien* alien = m_aliens[m_spawnOrderIndx++];
 
         alien->setDivePath(splinePaths::doubleLoopLeft({-107, 787}), false);
+        alien->activate();
+
+        pure::Animator<Alien> animator(*alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
         m_spawner.addAlien(alien);
     }
 
@@ -226,16 +229,16 @@ void AlienGroup::initAliens()
 
 void AlienGroup::tickAnimations()
 {
-
-    for (size_t i = 0; i < m_animators.size(); i++)
+    for (auto a : m_aliens)
     {
-        if (m_aliens[i]->state() == Alien::State::IN_FORMATION)
+        if (a->state() == Alien::State::IN_FORMATION)
         {
-            if (m_animators[i].animFrameIndx() == m_groupAnimFrame)
-                m_animators[i].step();
-
+            pure::Animator<Alien>* const anim = a->animator();
+            if (anim->animFrameIndx() == m_groupAnimFrame)
+                anim->step();
         }
     }
+
     m_groupAnimFrame = static_cast<uint8_t>(!m_groupAnimFrame);
 }
 
@@ -248,14 +251,11 @@ void AlienGroup::createAliens(std::array<glm::vec2, size>& positions, SpriteType
 
     for (uint32_t i = start; i < end; i++)
     {
-        Alien* alien = &m_world.instantiate<Alien>(startPos);
-        defaults::set(*alien, type);
+        Alien* alien = &m_world.instantiate<Alien>(startPos, type, false);
+
         alien->setGroupCell({ positions[i], i });
         alien->setBehavior(goToFormation);
         m_aliens.push_back(alien);
-
-        pure::Animator<Alien> animator(*alien, 2, alien->textureRect(), { spritemap::SIZE, 0 });
-        m_animators.push_back(animator);
     }
 }
 

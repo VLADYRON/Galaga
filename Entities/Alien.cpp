@@ -8,12 +8,17 @@
 #include <Pure2D/Util/Constants.h>
 #include "Alien.h"
 #include "../Util/Rect.h"
+#include "../Util/TextureManager.h"
+#include "../Game/AssetPaths.h"
+#include "../Util/SpriteMap.h"
 
 constexpr float minStopDist = 3.f;
 
 Alien::Alien():
         m_speed(350.f),
-        m_behavior(nullptr)
+        m_behavior(nullptr),
+        m_anim(*this),
+        m_health(1)
 {
     setSize({ 50, 50 });
     setOrigin(getSize() / 2.f);
@@ -52,9 +57,6 @@ void Alien::startDivePath()
 
 void Alien::setGroupCell(GroupCell cell) { m_groupCell = cell; }
 GroupCell Alien::groupCell() const { return m_groupCell; }
-
-void Alien::setType(SpriteType type) { m_type = type; }
-SpriteType Alien::type() const { return m_type; }
 
 void Alien::setBehavior(Alien::AlienBehavior behavior) { m_behavior = std::move(behavior); }
 void Alien::startBehavior() { m_isBehaviorActive = true; }
@@ -96,4 +98,42 @@ Rect Alien::colliderRect() const
 
     return collider;
 }
+
+void Alien::activate()
+{
+    SpaceEntity::activate();
+
+    pure::Texture* spritesheet = TextureManager::instance().getTexture(paths::GALAGA_SPRITE_SHEET);
+    assert(spritesheet != nullptr);
+
+    setTexture(spritesheet);
+    SDL_Rect textureRect{};
+
+    switch (type())
+    {
+        case SpriteType::BEE:
+            textureRect = spritemap::BEE_OPEN;
+            break;
+        case SpriteType::MOTH:
+            textureRect = spritemap::MOTH_OPEN;
+            break;
+        case SpriteType::CATCHER:
+            textureRect = spritemap::CATCHER_TURQUOISE_OPEN;
+            m_health = Health(2);
+            break;
+        default:
+            std::cout << "Given spritetype not defined for set function of type Alien" << std::endl;
+    }
+
+
+    setTextureRect(textureRect);
+    m_anim.setAnimOpts(2, textureRect, { spritemap::SIZE, 0 });
+    m_health.reset();
+}
+
+int Alien::health() const { return m_health.get(); }
+
+void Alien::takeDamage() { m_health.takeDamage(1); }
+
+pure::Animator<Alien>* const Alien::animator() { return &m_anim; }
 

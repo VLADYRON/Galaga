@@ -6,7 +6,10 @@
 #include "../Game/World.h"
 #include "../Util/Rect.h"
 #include "Missile.h"
-#include "../Util/Defaults.h"
+#include "SpriteType.h"
+#include "../Util/TextureManager.h"
+#include "../Util/SpriteMap.h"
+#include "../Game/AssetPaths.h"
 #include <Pure2D/Util/Convert.h>
 
 Fighter::Fighter()
@@ -19,9 +22,8 @@ Fighter::Fighter()
 void Fighter::fireMissile()
 {
     glm::vec2 shipPos = position();
-    glm::vec2 firePos = { shipPos.x, shipPos.y - (getSize().y / 2.f) - 13 };
-    auto& m = m_world->instantiate<Missile>(firePos);
-    defaults::set(m, SpriteType::MISSLE_PLAYER);
+    glm::vec2 firePos = { shipPos.x, shipPos.y - (getSize().y / 2.f) };
+    auto& m = m_world->instantiate<Missile>(firePos, SpriteType::MISSLE_PLAYER);
 }
 
 void Fighter::setWorld(World &world)
@@ -39,6 +41,20 @@ Rect Fighter::collilderRect() const
         rect.w - 3,
         rect.h - 2
     };
+}
+
+void Fighter::activate()
+{
+    SpaceEntity::activate();
+
+    pure::Texture* spritesheet = TextureManager::instance().getTexture(paths::GALAGA_SPRITE_SHEET);
+    assert(spritesheet != nullptr);
+
+    setTexture(spritesheet);
+    if (type() == SpriteType::SHIP_WHITE)
+        setTextureRect(spritemap::SHIP_WHITE);
+    else if (type() == SpriteType::SHIP_RED)
+        setTextureRect(spritemap::SHIP_RED);
 }
 
 

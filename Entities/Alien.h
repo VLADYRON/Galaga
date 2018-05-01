@@ -8,9 +8,12 @@
 
 #include "SpaceEntity.h"
 #include <functional>
+#include <vector>
+#include <Pure2D/Renderables/Animator.h>
 #include "../Splines/SplinePath.h"
-#include "../Util/Defaults.h"
 #include "../Components/GroupCell.h"
+#include "SpriteType.h"
+#include "../Components/Health.h"
 
 
 class Alien : public SpaceEntity
@@ -33,11 +36,13 @@ public:
     void startBehavior();
     void endBehavior();
 
-    void setType(SpriteType type);
-    SpriteType type() const;
-
     void setGroupCell(GroupCell cell);
     GroupCell groupCell() const;
+
+    int health() const;
+    void takeDamage();
+
+    pure::Animator<Alien>* const animator();
 
     void setState(State state);
     State state() const;
@@ -50,14 +55,19 @@ public:
     void startDivePath();
     void update(float deltaTime) final;
 
+    void activate() final;
 
-private:
+
+protected:
     float m_speed;
     State m_state;
     bool m_isBehaviorActive;
+
+    pure::Animator<Alien> m_anim;
     SpriteType m_type;
     AlienBehavior m_behavior;
     GroupCell m_groupCell;
+    Health m_health;
 
     SplinePath m_divePath;
 };

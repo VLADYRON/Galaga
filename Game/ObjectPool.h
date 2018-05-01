@@ -29,6 +29,8 @@ private:
 
 public:
 
+    using type = T;
+
     ObjectPool() = default;
 
     explicit ObjectPool(uint32_t size)
@@ -53,7 +55,7 @@ public:
         assert(m_firstAvailable);
 
         Poolable<T>* obj = m_firstAvailable;
-        obj->activate();
+        obj->onCreate();
 
         m_firstAvailable = obj->next;
 
@@ -68,7 +70,7 @@ public:
 
         auto* destroyTarget = static_cast<Poolable<T>*>(object);
 
-        destroyTarget->deactivate();
+        destroyTarget->onDestroy();
         destroyTarget->next = m_firstAvailable;
 
         m_firstAvailable = destroyTarget;
@@ -83,7 +85,7 @@ public:
     {
         auto* obj = static_cast<Poolable<T>*>(m_liveObjects[objectIndx]);
 
-        obj->deactivate();
+        obj->onDestroy();
         obj->next = m_firstAvailable;
         m_firstAvailable = obj;
 

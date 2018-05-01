@@ -12,7 +12,7 @@
 #include <Pure2D/Util/Clock.h>
 #include "../Util/Rect.h"
 #include "AlienSpawner.h"
-#include "../Util/Defaults.h"
+#include "../Entities/SpriteType.h"
 
 class Alien;
 class World;
@@ -52,7 +52,6 @@ private:
     AlienSpawner m_spawner;
 
     std::vector<Alien*> m_aliens;
-    std::vector<pure::Animator<Alien>> m_animators;
     uint8_t m_groupAnimFrame;
 
     uint32_t m_spawnOrderIndx = 0;

@@ -23,6 +23,8 @@ public:
 
     Rect collilderRect() const;
 
+    void activate() override;
+
 private:
     World* m_world;
 };

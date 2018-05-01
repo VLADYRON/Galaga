@@ -11,6 +11,7 @@
 #include <Pure2D/Util/Constants.h>
 #include <iostream>
 #include "ObjectPool.h"
+#include "../Entities/Entity.h"
 
 template<typename T>
 using EArr = std::vector<T>;
@@ -57,9 +58,33 @@ public:
         return std::get<ObjectPool<T>>(m_entities);
     }
 
+    template<typename T>
+    EArr<T*> getAllOfType()
+    {
+        EArr<T*> result;
+
+        std::apply([this, &result](auto&... x)
+           {
+               ( addQueryType<T, typename decltype(typename std::remove_reference<decltype(x)>::type())::type>(x, result), ...);
+           }, m_entities);
+
+        return result;
+    }
+
 
 private:
     std::tuple<ObjectPool<Args>...> m_entities;
+
+    template<typename B, typename D, typename T>
+    auto addQueryType(T& obj, EArr<B*>& arr) -> typename std::enable_if<!std::is_base_of<B, D>::value>::type
+    {}
+
+    template<typename B, typename D, typename T>
+    auto addQueryType(T& obj, EArr<B*>& arr) -> typename std::enable_if<std::is_base_of<B, D>::value>::type
+    {
+        const EArr<D*>& entities = obj.getLiveObjects();
+        arr.insert(arr.end(), entities.begin(), entities.end());
+    }
 };
 
 

@@ -8,6 +8,8 @@
 class LifeCycle
 {
 public:
+    virtual void onCreate() = 0;
+    virtual void onDestroy() = 0;
     virtual void activate() = 0;
     virtual void deactivate() = 0;
 };

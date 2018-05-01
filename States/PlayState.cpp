@@ -7,7 +7,7 @@
 #include "../Entities/Entity.h"
 #include "../Entities/Explosion.h"
 #include "../Entities/Missile.h"
-#include "../Util/Defaults.h"
+#include "../Entities/SpriteType.h"
 #include "../Util/Rect.h"
 #include "../Splines/SplinePaths.h"
 #include "../Player/PlayerController.h"
@@ -23,8 +23,7 @@ PlayState::PlayState(pure::StateManager& manager, pure::Window* window):
 void PlayState::onCreate()
 {
     Fighter& playerShip = m_player.getShip();
-
-    defaults::set(playerShip, SpriteType::SHIP_WHITE);
+    playerShip.activate();
 
     glm::vec2 position = {
         (m_window->getSize().x / 2.f),
@@ -80,12 +79,6 @@ void PlayState::update(float deltaTime)
 
         if (winRect.isOutside(pos))
             m_world.destroy<Missile>(*m);
-
-//        if (winRect.isOutside(pos))
-//        {
-//            m_world.destroy<Missile>(*m);
-//            std::cout << m_world.getEntities<Missile>().size() << std::endl;
-//        }
     }
 
     for (auto e : explosions)
@@ -99,14 +92,9 @@ void PlayState::update(float deltaTime)
 
 void PlayState::draw(const pure::Window &window)
 {
-    const EArr<Missile*>& missiles = m_world.getEntities<Missile>();
-    const EArr<Alien*>& aliens = m_world.getEntities<Alien>();
-    const EArr<Explosion*>& explosions = m_world.getEntities<Explosion>();
+    EArr<SpaceEntity*> entities = m_world.getEntitiesOfType<SpaceEntity>();
 
-
-    for (auto m : missiles) drawEntity(m);
-    for (auto a : aliens) drawEntity(a);
-    for (auto e : explosions) drawEntity(e);
+    for (auto r : entities) drawEntity(r);
 
     m_window->draw(m_stars);
     m_window->draw(m_player.getShip());

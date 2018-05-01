@@ -18,10 +18,12 @@ public:
     bool isDone() const;
     void update(float deltaTime) final;
 
-    void setAnim(uint32_t numAnims, SDL_Rect start, glm::vec2 offset);
+    void activate() final;
 
 private:
     pure::Animator<Explosion> m_anim;
+
+    void setAnim(uint32_t numAnims, SDL_Rect start, glm::vec2 offset);
 };
 
 

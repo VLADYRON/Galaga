@@ -9,6 +9,7 @@
 #include <Pure2D/Renderables/Texture.h>
 #include "Entity.h"
 #include "../Components/Sprite.h"
+#include "SpriteType.h"
 
 struct Rect;
 
@@ -33,8 +34,15 @@ public:
     void activate() override;
     void deactivate() override;
 
+    void onCreate() override;
+    void onDestroy() override;
+
+    SpriteType type() const;
+    void setType(SpriteType type);
+
 protected:
     Sprite m_sprite;
+    SpriteType m_type;
     bool m_isActive = false;
 
     void draw(SDL_Renderer* renderer) const final;

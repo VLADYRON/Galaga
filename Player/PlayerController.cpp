@@ -13,6 +13,7 @@ PlayerController::PlayerController(World &world):
     m_player()
 {
     m_player.setWorld(world);
+    m_player.setType(SpriteType::SHIP_WHITE);
 }
 
 void PlayerController::handleInput(const SDL_Event &event)
