@@ -10,7 +10,7 @@
 #include "../Game/World.h"
 
 #include "../Background/StarBackground.h"
-#include "../Scripts/AlienGroup.h"
+#include "../Scripts/Formation.h"
 #include "../Scripts/CollisionSystem.h"
 
 
@@ -23,7 +23,7 @@ private:
 
     pure::Window* m_window;
     World m_world;
-    AlienGroup m_alienGroup;
+    Formation m_alienGroup;
     PlayerController& m_player;
     StarBackground m_stars;
     CollisionSystem m_collision;

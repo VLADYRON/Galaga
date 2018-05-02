@@ -42,7 +42,7 @@ void CollisionSystem::resolvePlayerCollision()
 void CollisionSystem::resolveMissileCollision()
 {
     Fighter& player = m_world.getPlayer()->getShip();
-    auto aliens = m_world.getEntities<Alien>();
+    auto aliens = m_world.getEntitiesOfType<Alien>();
     auto& missiles = m_world.getEntities<Missile>();
 
     Rect playerRect = player.collilderRect();
@@ -73,7 +73,7 @@ void CollisionSystem::resolveMissileCollision()
                     }
                     else
                     {
-                        m_world.destroy<Alien>(*a);
+                        m_world.destroyBySuper(*a);
                         m_world.instantiate<Explosion>(a->position(), SpriteType::EXPLOSION_ALIEN);
                     }
 
@@ -87,7 +87,7 @@ void CollisionSystem::resolveMissileCollision()
 
 void CollisionSystem::resolveAlienCollision()
 {
-    Fighter& player = m_world.getPlayer()->getShip();
-    auto& aliens = m_world.getEntities<Alien>();
-    auto& missiles = m_world.getEntities<Missile>();
+//    Fighter& player = m_world.getPlayer()->getShip();
+//    auto aliens = m_world.getEntitiesOfType<Alien>();
+//    auto& missiles = m_world.getEntities<Missile>();
 }

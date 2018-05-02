@@ -19,6 +19,10 @@ using EArr = std::vector<T>;
 template<typename ...Args>
 class EntityManager
 {
+private:
+    template<class T>
+    using GetPoolType = typename decltype(typename std::remove_reference<T>::type())::type;
+
 public:
     EntityManager():
         m_entities(std::make_tuple(ObjectPool<Args>()...))
@@ -38,6 +42,24 @@ public:
     {
         ObjectPool<T>& pool = std::get<ObjectPool<T>>(m_entities);
         pool.resize(newSize);
+    }
+
+    /**
+     * Searches in all pools of given base type for given entity
+     * and then destroys it
+     *
+     * -- Use this for polymorphic types when exact type is not known --
+     *
+     * @tparam T Base class
+     * @param entity entity to be destroyed
+     */
+    template<typename T>
+    void destroyBySuper(T* entity)
+    {
+        std::apply([this, entity](auto&... x) {
+            bool done = false;
+            ( searchDestroyEntity<GetPoolType<decltype(x)>>(entity, x, done), ...);
+        }, m_entities);
     }
 
     /**
@@ -63,10 +85,9 @@ public:
     {
         EArr<T*> result;
 
-        std::apply([this, &result](auto&... x)
-           {
-               ( addQueryType<T, typename decltype(typename std::remove_reference<decltype(x)>::type())::type>(x, result), ...);
-           }, m_entities);
+        std::apply([this, &result](auto&... x) {
+           ( addQueryType<T, GetPoolType<decltype(x)>>(x, result), ...);
+        }, m_entities);
 
         return result;
     }
@@ -75,14 +96,37 @@ public:
 private:
     std::tuple<ObjectPool<Args>...> m_entities;
 
-    template<typename B, typename D, typename T>
-    auto addQueryType(T& obj, EArr<B*>& arr) -> typename std::enable_if<!std::is_base_of<B, D>::value>::type
-    {}
+    template<typename Base, typename Derived, typename Ret = void>
+    using EnableIfBaseOf = typename std::enable_if_t<std::is_base_of_v<Base, Derived>, Ret>;
+    template<typename Base, typename Derived, typename Ret = void>
+    using DisableIfBaseOf = typename std::enable_if_t<!std::is_base_of_v<Base, Derived>, Ret>;
 
-    template<typename B, typename D, typename T>
-    auto addQueryType(T& obj, EArr<B*>& arr) -> typename std::enable_if<std::is_base_of<B, D>::value>::type
+    template<typename Derived, typename Base, typename Pool>
+    auto searchDestroyEntity(Base* obj, Pool& pool, bool& done) -> DisableIfBaseOf<Base, Derived> { };
+
+    template<typename Derived, typename Base, typename Pool>
+    auto searchDestroyEntity(Base* obj, Pool& pool, bool& done) -> EnableIfBaseOf <Base, Derived>
     {
-        const EArr<D*>& entities = obj.getLiveObjects();
+        if (done) return;
+        const EArr<Derived*>& entities = pool.getLiveObjects();
+        for (auto e : entities)
+        {
+            if (e == obj)
+            {
+                pool.destroy(static_cast<Derived*>(obj));
+                done = true;
+                return;
+            }
+        }
+    };
+
+    template<typename Base, typename Derived, typename Pool>
+    auto addQueryType(Pool& obj, EArr<Base*>& arr) -> DisableIfBaseOf<Base, Derived> { }
+
+    template<typename Base, typename Derived, typename Pool>
+    auto addQueryType(Pool& pool, EArr<Base*>& arr) -> EnableIfBaseOf<Base, Derived>
+    {
+        const EArr<Derived*>& entities = pool.getLiveObjects();
         arr.insert(arr.end(), entities.begin(), entities.end());
     }
 };

@@ -27,6 +27,15 @@ Alien::Alien():
 
 void Alien::update(float deltaTime)
 {
+    switch(state())
+    {
+        case State::IDLE: handleIdleState(); break;
+        case State::DIVING: handleDivingState(); break;
+        case State::DIVE_END: handleDiveEndState(); break;
+        case State::IN_FORMATION: handleInFormationState(); break;
+    }
+
+
     if (!m_divePath.isDone())
     {
         SplinePath::ResultPoint rp = m_divePath.getNextStep(deltaTime * m_speed);
@@ -53,10 +62,10 @@ void Alien::startDivePath()
     m_state = Alien::State::DIVING;
 }
 
-//bool Alien::isDiving() const { return !m_divePath.isDone(); }
+bool Alien::isDiving() const { return !m_divePath.isDone(); }
 
-void Alien::setGroupCell(GroupCell cell) { m_groupCell = cell; }
-GroupCell Alien::groupCell() const { return m_groupCell; }
+void Alien::setFormationPos(FormationPosition cell) { m_formationPos = cell; }
+FormationPosition Alien::formationPos() const { return m_formationPos; }
 
 void Alien::setBehavior(Alien::AlienBehavior behavior) { m_behavior = std::move(behavior); }
 void Alien::startBehavior() { m_isBehaviorActive = true; }

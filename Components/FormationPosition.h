@@ -7,7 +7,7 @@
 
 #include <glm/vec2.hpp>
 
-struct GroupCell
+struct FormationPosition
 {
     glm::vec2 position;
     uint32_t index;

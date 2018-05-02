@@ -13,14 +13,15 @@
 #include "../Util/Rect.h"
 #include "AlienSpawner.h"
 #include "../Entities/SpriteType.h"
+#include "../Components/FormationPosition.h"
 
 class Alien;
 class World;
 
-class AlienGroup : private pure::NonCopyable
+class Formation : private pure::NonCopyable
 {
 public:
-    explicit AlienGroup(World& world, glm::vec2 cellSize, glm::vec2 boundary);
+    explicit Formation(World& world, glm::vec2 cellSize, glm::vec2 boundary);
 
     void update(float deltaTime);
     void reset();
@@ -64,7 +65,7 @@ private:
     void tickAnimations();
     bool hasPendingAliens() const;
 
-    template<size_t size>
+    template<typename T, size_t size>
     void createAliens(std::array<glm::vec2, size>& positions, SpriteType type, uint32_t start, uint32_t count);
 
 };

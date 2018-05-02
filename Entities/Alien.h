@@ -11,7 +11,7 @@
 #include <vector>
 #include <Pure2D/Renderables/Animator.h>
 #include "../Splines/SplinePath.h"
-#include "../Components/GroupCell.h"
+#include "../Components/FormationPosition.h"
 #include "SpriteType.h"
 #include "../Components/Health.h"
 
@@ -30,14 +30,17 @@ public:
     using AlienBehavior = std::function<void(Alien&, float)>;
 
     explicit Alien();
+    virtual ~Alien() = default;
+
+    bool isDiving() const;
 
     void setBehavior(AlienBehavior behavior);
 
     void startBehavior();
     void endBehavior();
 
-    void setGroupCell(GroupCell cell);
-    GroupCell groupCell() const;
+    void setFormationPos(FormationPosition cell);
+    FormationPosition formationPos() const;
 
     int health() const;
     void takeDamage();
@@ -66,10 +69,16 @@ protected:
     pure::Animator<Alien> m_anim;
     SpriteType m_type;
     AlienBehavior m_behavior;
-    GroupCell m_groupCell;
+    FormationPosition m_formationPos;
     Health m_health;
 
     SplinePath m_divePath;
+
+    virtual void handleIdleState() { };
+    virtual void handleInFormationState() { }
+    virtual void handleDivingState() = 0;
+    virtual void handleDiveEndState() = 0;
+
 };
 
 

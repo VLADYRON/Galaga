@@ -18,6 +18,8 @@
 #include "../Entities/Alien.h"
 #include "../Player/PlayerController.h"
 #include "../Entities/Explosion.h"
+#include "../Entities/Soldier.h"
+#include "../Entities/Catcher.h"
 
 namespace pure
 {
@@ -62,6 +64,24 @@ public:
     }
 
     /**
+    * Searches in all pools of given base type for given entity
+    * and then destroys it
+    *
+    * -- Use this for polymorphic types when exact type is not known --
+    *
+    * @tparam T Base class
+    * @param entity entity to be destroyed
+    */
+    template<typename T>
+    void destroyBySuper(T& entity)
+    {
+        checkTypeErr<T>();
+
+        entity.deactivate();
+        m_entityManager.destroyBySuper(&entity);
+    }
+
+    /**
      * Requests for an entity to be deleted
      * @tparam T Type of entity to be deleted
      * @param entity
@@ -82,7 +102,8 @@ private:
     PlayerController m_player;
     EntityManager<
         Missile,
-        Alien,
+        Soldier,
+        Catcher,
         Explosion
         > m_entityManager;
 

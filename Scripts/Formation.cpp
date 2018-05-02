@@ -5,12 +5,14 @@
 #include <Pure2D/Util/Convert.h>
 #include <Pure2D/Util/Random.h>
 #include <glm/ext.hpp>
-#include "AlienGroup.h"
+#include "Formation.h"
 #include "../Game/World.h"
 #include "../Entities/Alien.h"
 #include "../Splines/SplinePaths.h"
 #include "../Util/Rect.h"
 #include "../Util/SpriteMap.h"
+#include "../Entities/Soldier.h"
+#include "../Entities/Catcher.h"
 
 /*****************************
  ****** PRIVATE STATICS ******
@@ -18,7 +20,7 @@
 
 constexpr float moveTickDir = 0.5f;
 constexpr float spawnDelay = 1.5f;
-const glm::vec2 AlienGroup::m_size = { 10, 5 };
+const glm::vec2 Formation::m_size = { 10, 5 };
 
 /**********************************
  ****** FORWARD DECLARATIONS ******
@@ -27,13 +29,13 @@ template<size_t size>
 void assignPositions(glm::vec2 cellSize, glm::vec2 offset, std::array<glm::vec2, size>& positions);
 template<size_t size>
 void updateGroupPos(std::array<glm::vec2, size>& positions, Alien* alien, glm::vec2 masterGroupPos);
-template void AlienGroup::createAliens<4>(std::array<glm::vec2, 4>& positions, SpriteType type, uint32_t start, uint32_t count);
-template void AlienGroup::createAliens<16>(std::array<glm::vec2, 16>& positions, SpriteType type, uint32_t start, uint32_t count);
-template void AlienGroup::createAliens<20>(std::array<glm::vec2, 20>& positions, SpriteType type, uint32_t start, uint32_t count);
+template void Formation::createAliens<Catcher, 4>(std::array<glm::vec2, 4>& positions, SpriteType type, uint32_t start, uint32_t count);
+template void Formation::createAliens<Soldier, 16>(std::array<glm::vec2, 16>& positions, SpriteType type, uint32_t start, uint32_t count);
+template void Formation::createAliens<Soldier, 20>(std::array<glm::vec2, 20>& positions, SpriteType type, uint32_t start, uint32_t count);
 void goToFormation(Alien& alien, float dt);
 
 
-AlienGroup::AlienGroup(World &world, glm::vec2 cellSize, glm::vec2 boundary):
+Formation::Formation(World &world, glm::vec2 cellSize, glm::vec2 boundary):
     m_world(world),
     m_rect({ 50, 50 }),
     m_moveDir(20.f),
@@ -51,7 +53,7 @@ AlienGroup::AlienGroup(World &world, glm::vec2 cellSize, glm::vec2 boundary):
     });
 }
 
-void AlienGroup::update(float deltaTime)
+void Formation::update(float deltaTime)
 {
 
     if (m_needsSpawn && m_spawnTimer.getElapsedTime() >= spawnDelay)
@@ -92,7 +94,7 @@ void AlienGroup::update(float deltaTime)
 }
 
 // TODO: Stop using this and use start()
-void AlienGroup::spawnAliens()
+void Formation::spawnAliens()
 {
     if (!hasPendingAliens()) return;
 
@@ -111,7 +113,7 @@ void AlienGroup::spawnAliens()
     m_needsSpawn = false;
 }
 
-void AlienGroup::setupGroupPositions()
+void Formation::setupGroupPositions()
 {
     {
         float offset = 3;
@@ -124,23 +126,23 @@ void AlienGroup::setupGroupPositions()
         }
     }
 
-    m_rect.w = m_cellSize.x * AlienGroup::m_size.x;
-    m_rect.h = m_cellSize.y * AlienGroup::m_size.y;
+    m_rect.w = m_cellSize.x * Formation::m_size.x;
+    m_rect.h = m_cellSize.y * Formation::m_size.y;
 
     assignPositions(m_cellSize, { 1, 1 }, m_mothPos);
     assignPositions(m_cellSize, { 0, 3 }, m_beePos);
 }
 
 
-void AlienGroup::reset()
+void Formation::reset()
 {
     for (auto alien : m_aliens)
-        m_world.destroy<Alien>(*alien);
+        m_world.destroyBySuper(*alien);
     m_aliens.clear();
 }
 
 // TODO: Use this and not spawnAliens()
-void AlienGroup::start()
+void Formation::start()
 {
 
     {
@@ -159,12 +161,12 @@ void AlienGroup::start()
 }
 
 
-void AlienGroup::setPosition(glm::vec2 pos)
+void Formation::setPosition(glm::vec2 pos)
 {
     m_rect = { pos.x, pos.y, m_rect.w, m_rect.h };
 }
 
-void AlienGroup::move(glm::vec2 offset)
+void Formation::move(glm::vec2 offset)
 {
     m_rect = {
         m_rect.x + offset.x,
@@ -173,12 +175,12 @@ void AlienGroup::move(glm::vec2 offset)
     };
 }
 
-Rect AlienGroup::boundingRect() const { return m_rect; }
-glm::vec2 AlienGroup::position() const { return { m_rect.x, m_rect.y }; }
+Rect Formation::boundingRect() const { return m_rect; }
+glm::vec2 Formation::position() const { return { m_rect.x, m_rect.y }; }
 
-void AlienGroup::setMoveDir(float dir) { m_moveDir = dir; }
+void Formation::setMoveDir(float dir) { m_moveDir = dir; }
 
-void AlienGroup::move()
+void Formation::move()
 {
     const glm::vec2 newPos = { m_rect.x  + m_moveDir, m_rect.y };
     Rect boundaryBox = { 0, 0, m_boundary.x, m_boundary.y };
@@ -206,28 +208,28 @@ void AlienGroup::move()
     m_moveTimer.restart();
 }
 
-bool AlienGroup::hasPendingAliens() const
+bool Formation::hasPendingAliens() const
 {
     return m_spawnOrderIndx < m_aliens.size();
 }
 
-void AlienGroup::initAliens()
+void Formation::initAliens()
 {
     uint32_t mothIndx = 0;
     uint32_t beeIndx = 0;
 
-    createAliens(m_beePos, SpriteType::BEE, beeIndx, 4); beeIndx += 4;
-    createAliens(m_mothPos, SpriteType::MOTH, mothIndx, 4); mothIndx += 4;
+    createAliens<Soldier>(m_beePos, SpriteType::BEE, beeIndx, 4); beeIndx += 4;
+    createAliens<Soldier>(m_mothPos, SpriteType::MOTH, mothIndx, 4); mothIndx += 4;
 
-    createAliens(m_catcherPos, SpriteType::CATCHER, 0, 4);
-    createAliens(m_mothPos, SpriteType::MOTH, mothIndx, 4); mothIndx += 4;
-    createAliens(m_mothPos, SpriteType::MOTH, mothIndx, 8); mothIndx += 8;
+    createAliens<Catcher>(m_catcherPos, SpriteType::CATCHER, 0, 4);
+    createAliens<Soldier>(m_mothPos, SpriteType::MOTH, mothIndx, 4); mothIndx += 4;
+    createAliens<Soldier>(m_mothPos, SpriteType::MOTH, mothIndx, 8); mothIndx += 8;
 
-    createAliens(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
-    createAliens(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
+    createAliens<Soldier>(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
+    createAliens<Soldier>(m_beePos, SpriteType::BEE, beeIndx, 8); beeIndx += 8;
 }
 
-void AlienGroup::tickAnimations()
+void Formation::tickAnimations()
 {
     for (auto a : m_aliens)
     {
@@ -242,8 +244,8 @@ void AlienGroup::tickAnimations()
     m_groupAnimFrame = static_cast<uint8_t>(!m_groupAnimFrame);
 }
 
-template<size_t size>
-void AlienGroup::createAliens(std::array<glm::vec2, size>& positions, SpriteType type, uint32_t start, uint32_t count)
+template<typename T, size_t size>
+void Formation::createAliens(std::array<glm::vec2, size>& positions, SpriteType type, uint32_t start, uint32_t count)
 {
     // default to offscreen pos
     static const glm::vec2 startPos = { -100, -100 };
@@ -251,10 +253,10 @@ void AlienGroup::createAliens(std::array<glm::vec2, size>& positions, SpriteType
 
     for (uint32_t i = start; i < end; i++)
     {
-        Alien* alien = &m_world.instantiate<Alien>(startPos, type, false);
+        Alien* alien = &m_world.instantiate<T>(startPos, type, false);
 
-        alien->setGroupCell({ positions[i], i });
         alien->setBehavior(goToFormation);
+        alien->setFormationPos({ positions[i], i });
         m_aliens.push_back(alien);
     }
 }
@@ -289,9 +291,9 @@ void assignPositions(glm::vec2 cellSize, glm::vec2 offset, std::array<glm::vec2,
 template<size_t size>
 void updateGroupPos(std::array<glm::vec2, size>& positions, Alien* alien, glm::vec2 masterGroupPos)
 {
-    const GroupCell cellInfo = alien->groupCell();
+    const FormationPosition cellInfo = alien->formationPos();
     const glm::vec2 newPos = positions[cellInfo.index] + masterGroupPos;
-    alien->setGroupCell({ newPos, cellInfo.index });
+    alien->setFormationPos({newPos, cellInfo.index});
 
     if (alien->state() == Alien::State::IN_FORMATION) alien->setPosition(newPos);
 }
@@ -300,12 +302,12 @@ void goToFormation(Alien &alien, float dt)
 {
     constexpr float minStopDist = 3.f;
 
-    glm::vec2 dir = alien.groupCell().position - alien.position();
+    glm::vec2 dir = alien.formationPos().position - alien.position();
 
     if (glm::length(dir) <= minStopDist)
     {
         alien.setRotation(0); // face toward top of screen
-        alien.setPosition(alien.groupCell().position);
+        alien.setPosition(alien.formationPos().position);
         alien.endBehavior();
         alien.setState(Alien::State::IN_FORMATION);
         return;
